@@ -1,8 +1,11 @@
 package fel.cvut.pjv.controller;
 
 import com.sun.marlin.Version;
+import fel.cvut.pjv.util.Time;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+
+import java.lang.invoke.SwitchPoint;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -16,8 +19,10 @@ public class Window {
     private static Window window = null;
     private long glfwWindow;
 
-    private float r, g, b, a;
+    public float r, g, b, a;
     private boolean fadeToBlack = false;
+
+    private static Scene currentScene;
 
     private Window() {
         this.width = 1920;
@@ -27,6 +32,21 @@ public class Window {
         g = 1;
         b = 1;
         a = 1;
+    }
+
+    public static void changeScene(int newScene){
+        switch (newScene){
+            case 0:
+                currentScene = new LevelEditorScene();
+                //currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown scene '" + newScene + "'";
+                break;
+        }
     }
 
     public static Window getWindow() {
@@ -89,12 +109,18 @@ public class Window {
     }
 
     public void loop() {
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
+        float dt = -1.0f;
+
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        Window.changeScene(0);
 
         // Set the clear color
         glClearColor(r, g, b, a);
@@ -107,17 +133,15 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            if(fadeToBlack){
-                r = Math.max(r - 0.01f, 0);
-                g = Math.max(r - 0.01f, 0);
-                b = Math.max(r - 0.01f, 0);
-            }
-
-            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
-                fadeToBlack = true;
+            if (dt >= 0) {
+                currentScene.update(dt);
             }
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
+
+            endTime = Time.getTime();
+            dt = endTime - beginTime;
+            beginTime = endTime;
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
