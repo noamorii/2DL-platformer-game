@@ -4,6 +4,7 @@ import com.sun.marlin.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -15,10 +16,17 @@ public class Window {
     private static Window window = null;
     private long glfwWindow;
 
+    private float r, g, b, a;
+    private boolean fadeToBlack = false;
+
     private Window() {
         this.width = 1920;
         this.height = 1080;
         this.title = "2DL-Engine";
+        r = 1;
+        g = 1;
+        b = 1;
+        a = 1;
     }
 
     public static Window getWindow() {
@@ -34,6 +42,14 @@ public class Window {
 
         init();
         loop();
+
+        // Free the memory
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        // Terminate GLFW, free error
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void init() {
@@ -57,6 +73,11 @@ public class Window {
             throw new IllegalStateException("Failed to create the GLFW window.");
         }
 
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         // Enable v-sync
@@ -76,18 +97,31 @@ public class Window {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(r, g, b, a);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
+            glfwPollEvents();
+
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+            if(fadeToBlack){
+                r = Math.max(r - 0.01f, 0);
+                g = Math.max(r - 0.01f, 0);
+                b = Math.max(r - 0.01f, 0);
+            }
+
+            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
+                fadeToBlack = true;
+            }
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
-            glfwPollEvents();
+
         }
     }
 }
