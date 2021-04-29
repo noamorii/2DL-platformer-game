@@ -38,10 +38,14 @@ public class Window {
         switch (newScene){
             case 0:
                 currentScene = new LevelEditorScene();
-                //currentScene.init();
+                currentScene.init();
+                currentScene.start();
                 break;
             case 1:
                 currentScene = new LevelScene();
+                currentScene.init();
+                currentScene.start();
+
                 break;
             default:
                 assert false : "Unknown scene '" + newScene + "'";
@@ -49,12 +53,16 @@ public class Window {
         }
     }
 
-    public static Window getWindow() {
+    public static Window get() {
         if (Window.window == null) {
             Window.window = new Window();
         }
 
         return Window.window;
+    }
+
+    public static Scene getScene() {
+        return get().currentScene;
     }
 
     public void run() {
@@ -105,6 +113,8 @@ public class Window {
 
         // Make the window visible
         glfwShowWindow(glfwWindow);
+        GL.createCapabilities();
+        Window.changeScene(0);
 
     }
 
@@ -118,12 +128,6 @@ public class Window {
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
-        GL.createCapabilities();
-
-        Window.changeScene(0);
-
-        // Set the clear color
-        glClearColor(r, g, b, a);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -131,7 +135,7 @@ public class Window {
             glfwPollEvents();
 
             glClearColor(r, g, b, a);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+            glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
 
             if (dt >= 0) {
                 currentScene.update(dt);
