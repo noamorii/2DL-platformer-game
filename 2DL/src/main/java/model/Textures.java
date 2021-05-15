@@ -18,7 +18,7 @@ public class Textures implements Serializable {
     protected int imageHeight;
     protected boolean collidable;
     protected transient Image image;
-    protected String currentImagePath; // set on a game save
+
 
     public Textures(String textureName, int width, int height, boolean collidable) {
 
@@ -28,7 +28,6 @@ public class Textures implements Serializable {
         this.xPos = 0;
         this.yPos = 0;
         this.collidable = collidable;
-        currentImagePath = textureName;
     }
 
     public double getX() {
@@ -47,18 +46,22 @@ public class Textures implements Serializable {
         return imageWidth;
     }
 
-    public Textures setX(double x) {
+    public Textures setXsetY(double x, double y) {
         xPos = x;
-        return this;
-    }
-
-    public Textures setY(double y) {
         yPos = y;
         return this;
     }
 
     public boolean isCollidable() {
         return collidable;
+    }
+
+    public void setGif(String imagePath) {
+        image = new ImageIcon(imagePath).getImage();
+    }
+
+    public void update(Graphics g) {
+        g.drawImage(image, (int)xPos, (int)yPos, imageWidth, imageHeight, null);
     }
 
     public boolean overlaps(Textures tex) {

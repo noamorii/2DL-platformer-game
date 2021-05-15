@@ -1,20 +1,30 @@
 package view;
 
-import java.awt.Dimension;
+import controller.Game;
+import controller.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Window extends JFrame implements ActionListener{
 
-    public Window() {
+    public Window(Game gm) {
 
-        setTitle("2DL");
-        setSize(new Dimension(1500, 800));
+        // Define the viewing window and viewing properties
+        setTitle(Settings.gameName);
+        setSize(Settings.windowWidth, Settings.windowHeight);
+
+        getContentPane().add(new MyPanel(gm));
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
         setVisible(true);
-        //addKeyListener(c);
+        setResizable(false);
+        addKeyListener(gm);
+
+        MyPanel myPanel = new MyPanel(gm);
+        JMenuBar mainMenu = myPanel.showOptions(gm);
+        this.setJMenuBar(mainMenu);
+
     }
 
     @Override
