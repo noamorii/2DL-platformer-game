@@ -18,7 +18,7 @@ public class Textures implements Serializable {
     protected int imageHeight;
     protected boolean collidable;
     protected transient Image image;
-
+    protected String currentImagePath; // set on a game save
 
     public Textures(String textureName, int width, int height, boolean collidable) {
 
@@ -28,6 +28,7 @@ public class Textures implements Serializable {
         this.xPos = 0;
         this.yPos = 0;
         this.collidable = collidable;
+        currentImagePath = textureName;
     }
 
     public double getX() {
@@ -52,12 +53,42 @@ public class Textures implements Serializable {
         return this;
     }
 
+    public Textures setX(double x) {
+        xPos = x;
+        return this;
+    }
+
+    public Textures setY(double y) {
+        yPos = y;
+        return this;
+    }
+
     public boolean isCollidable() {
         return collidable;
     }
 
+    public void saveImage() {
+        // base sprites don't need to do anything extra
+    }
+
+    public void setImage(String imagePath) {
+        try {
+            image = ImageIO.read(new File(imagePath));
+        } catch (IOException ioe) {
+            System.out.println("Unable to load image file.");
+        }
+    }
+
     public void setGif(String imagePath) {
         image = new ImageIcon(imagePath).getImage();
+    }
+
+    public void loadImage() {
+        if (currentImagePath.contains(".gif")) {
+            setGif(Settings.assetDirectory + currentImagePath);
+        } else {
+            setImage(Settings.assetDirectory + currentImagePath);
+        }
     }
 
     public void update(Graphics g) {

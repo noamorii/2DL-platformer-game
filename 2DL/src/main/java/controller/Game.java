@@ -1,9 +1,11 @@
 package controller;
 
+import model.Character;
 import model.Level;
 import view.Window;
 import java.awt.Graphics;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,17 +24,18 @@ public class Game implements MouseListener, KeyListener, ActionListener {
         level = new Level();
         timer = new Timer(20, window);
         timer.start();
+        displayInstructions();
     }
 
 
     public void update(Graphics g) {
-        if (level!= null) {
+        if (level!= null) { // on first call, model will be null, necessary to have view run first to populate Definitions class with world info
             if (level.gameIsOver()) {
                 timer.stop();
                 if (level.playerWon()) {
-                    //
+                    JOptionPane.showMessageDialog(window, Settings.winningText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    //
+                    JOptionPane.showMessageDialog(window, Settings.losingText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
                 }
                 level = new Level();
                 timer.start();
@@ -51,13 +54,46 @@ public class Game implements MouseListener, KeyListener, ActionListener {
             paused = false;
             timer.start();
         }
+
     }
 
     public void saveGame() {
+
+        level.saveImages();
+
+        try {
+            FileOutputStream fileStream = new FileOutputStream("save.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileStream);
+            out.writeObject(level);
+            fileStream.close();
+            out.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
     }
 
     public void loadGame() {
+        paused = true;
+        timer.stop();
 
+        try {
+            FileInputStream fileStream = new FileInputStream("save.txt");
+            ObjectInputStream in = new ObjectInputStream(fileStream);
+            level = (Level) in.readObject();
+            fileStream.close();
+            in.close();
+        } catch (IOException | ClassNotFoundException i) {
+            i.printStackTrace();
+            System.exit(1);
+        }
+
+        level.loadImages();
+        paused = false;
+        timer.start();
+    }
+
+    public void displayInstructions() {
+        JOptionPane.showMessageDialog(window, Settings.instructionText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -68,6 +104,8 @@ public class Game implements MouseListener, KeyListener, ActionListener {
                 level.setPlayerDirection(Settings.VelocityState.RIGHT);
             } else if (e.getKeyChar() == ' ') {
                 level.jumpPlayer();
+            } else if (e.getKeyChar() == VK_ENTER) {
+                level.throwFireball();
             }
         }
     }
@@ -80,27 +118,36 @@ public class Game implements MouseListener, KeyListener, ActionListener {
         }
     }
 
-    public void keyTyped(KeyEvent e) {}
-    public void mousePressed(MouseEvent e){}
-    public void mouseReleased(MouseEvent e){}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
-    public void mouseClicked(MouseEvent e) {}
+    // unused KeyListener methods
+    public void keyTyped(KeyEvent e) { }
+
+    // unused MouseListener methods
+    public void mousePressed(MouseEvent e) {
+//		if (SwingUtilities.isLeftMouseButton(e)) {
+//
+//		} else if (SwingUtilities.isRightMouseButton(e))  {
+//
+//		}
+//
+//		view.repaint();
+    }
+    public void mouseReleased(MouseEvent e) {    }
+    public void mouseEntered(MouseEvent e) {    }
+    public void mouseExited(MouseEvent e) {    }
+    public void mouseClicked(MouseEvent e) {    }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        switch (evt.getActionCommand()) {
-            case "Pause/Resume":
-                pause();
-                break;
-            case "Save Game":
-                saveGame();
-                break;
-            case "Load Game":
-                loadGame();
-                break;
-            case "Exit":
-                System.exit(0);
+        if (evt.getActionCommand() == "Pause/Resume") {
+            pause();
+        } else if (evt.getActionCommand().equals("Save Game")) {
+            saveGame();
+        } else if (evt.getActionCommand().equals("Load Game")) {
+            loadGame();
+        } else if (evt.getActionCommand().equals("Instructions")) {
+            displayInstructions();
+        } else if (evt.getActionCommand().equals("Exit")) {
+            System.exit(0);
         }
     }
 }

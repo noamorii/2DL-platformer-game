@@ -2,6 +2,7 @@ package view;
 
 import controller.Game;
 import controller.Settings;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -9,7 +10,6 @@ import javax.swing.*;
 public class Window extends JFrame implements ActionListener{
 
     public Window(Game gm) {
-
         // Define the viewing window and viewing properties
         setTitle(Settings.gameName);
         setSize(Settings.windowWidth, Settings.windowHeight);
@@ -24,7 +24,6 @@ public class Window extends JFrame implements ActionListener{
         MyPanel myPanel = new MyPanel(gm);
         JMenuBar mainMenu = myPanel.showOptions(gm);
         this.setJMenuBar(mainMenu);
-
     }
 
     @Override

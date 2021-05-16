@@ -3,6 +3,7 @@ package model;
 import controller.Settings;
 
 import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ public class Level implements Serializable {
 
         texturesArrayList = new ArrayList<>();
         //back
+        //back
         texturesArrayList.add(new Textures("background.png", 1500, 800, false));
         //platforms
 
@@ -36,7 +38,7 @@ public class Level implements Serializable {
         texturesArrayList.add(new Textures("Plants_12.png", 150, 150, false).setXsetY(900, 380));
 
 
-        goblet = new Textures("goblet.png", 70, 70, false).setXsetY(1400, 95);
+        goblet = new Textures("goblet.png", 70, 70, false).setX(1400).setY(95);
         texturesArrayList.add(goblet);
         character = new Character();
         texturesArrayList.add(character);
@@ -92,16 +94,54 @@ public class Level implements Serializable {
                     won = true;
                 } else {
                     ((Character) texture).updateInfo();
+                    fixCollisions();
                     if (texture.getY() >= Settings.windowHeight || character.isDead()) {
                         gameIsOver = true;
                     }
                 }
 
+
+            } else if (texture instanceof FireBall) {
+                if (((FireBall) texture).isExpired()) {
+                    ((FireBall) texture).removeFireBall();
+                    iter.remove();
+                }
+
+
             } else if (texture instanceof Enemy) {
                 if (((Enemy) texture).isDead()) {
-                    texture.update(g);
+                    if (((Enemy) texture).getFramesSinceDeath() == Settings.enemyDeathLength) {
+                        iter.remove();
+                    } else {
+                        ((Enemy) texture).incrementFramesSinceDeath();
+                    }
+                } else {
+                    for (Textures fireball : texturesArrayList) {
+                        if (fireball instanceof FireBall && texture.overlaps(fireball)) {
+                            if (Enemy.hp != 1) {
+                                Enemy.hp--;
+                            } else {
+                                ((Enemy) texture).kill();
+                                ((Enemy) texture).incrementFramesSinceDeath();
+                            }
+
+                            ((FireBall) fireball).removeFireBall();
+
+                        }
+                    }
                 }
             }
+            texture.update(g);
+        }
+    }
+
+    public void saveImages() {
+        character.saveImage();
+    }
+
+    public void loadImages() {
+        for (Textures s : texturesArrayList) {
+            s.loadImage();
         }
     }
 
@@ -131,4 +171,38 @@ public class Level implements Serializable {
         setPlayerDirection(state);
     }
 
+    private void fixCollisions() {
+        for (Textures s : texturesArrayList) {
+            if (!(s instanceof Character) && s.isCollidable() && character.overlaps(s)) { // then there is a collision that needs to be resolved
+                if (character.getPrev_X() + character.getWidth() - Settings.characterHitBox < s.getX()) {
+                    character.setX(s.getX() - character.getWidth() + Settings.characterHitBox - 1);
+                } else if (character.getPrev_X() + Settings.characterHitBox > s.getX() + s.getWidth()) {
+                    character.setX(s.getX() + s.getWidth() - Settings.characterHitBox + 1);
+                } else if (character.getPrev_Y() + character.getHeight() < s.getY()) {
+                    if (character.isFacingRight() && character.isAirborne()) {
+                        character.setStandingRightImage();
+                    } else if (!character.isFacingRight() && !character.isAirborne()) {
+                        character.setStandingLeftImage();
+                    }
+                    character.setY(s.getY() - character.getHeight() - 1);
+                    character.setAirborne(false);
+                    character.setDoubleJump(true);
+                    if (character.getVelocity() > 0) {
+                        character.setVelocity(0);
+                    }
+                } else if (character.getPrev_Y() + Settings.characterHitBoxTop > s.getY() + s.getHeight()) {
+                    character.setY(s.getY() + s.getHeight() - Settings.characterHitBoxTop + 1);
+                    character.setVelocity((int) (-0.6 * character.getVelocity()));
+                }
+            }
+        }
+    }
+
+    public void throwFireball() {
+        //character.attack();
+        //image = new ImageIcon(Settings.assetDirectory + "player_jump_right.gif").getImage();
+        if (FireBall.getCount() < 3) {
+            texturesArrayList.add(new FireBall(character.getX(), character.getY(), character.isFacingRight()));
+        }
+    }
 }
