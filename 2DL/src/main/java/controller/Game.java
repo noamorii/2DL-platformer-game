@@ -1,7 +1,7 @@
 package controller;
 
-import model.Character;
 import model.Level;
+import view.Menu;
 import view.Window;
 import java.awt.Graphics;
 import java.awt.event.*;
@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.event.KeyEvent.VK_ENTER;
 
-public class Game implements MouseListener, KeyListener, ActionListener {
+public class Game implements  KeyListener, ActionListener {
 
     private static Timer timer;
     private final Window window;
@@ -23,12 +23,13 @@ public class Game implements MouseListener, KeyListener, ActionListener {
         window = new Window(this);
         level = new Level();
         timer = new Timer(20, window);
+
         timer.start();
         displayInstructions();
     }
 
-
     public void update(Graphics g) {
+
         if (level!= null) { // on first call, model will be null, necessary to have view run first to populate Definitions class with world info
             if (level.gameIsOver()) {
                 timer.stop();
@@ -54,7 +55,6 @@ public class Game implements MouseListener, KeyListener, ActionListener {
             paused = false;
             timer.start();
         }
-
     }
 
     public void saveGame() {
@@ -67,6 +67,7 @@ public class Game implements MouseListener, KeyListener, ActionListener {
             out.writeObject(level);
             fileStream.close();
             out.close();
+
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -96,6 +97,10 @@ public class Game implements MouseListener, KeyListener, ActionListener {
         JOptionPane.showMessageDialog(window, Settings.instructionText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
     public void keyPressed(KeyEvent e) {
         if (!paused) {
             if (e.getKeyChar() == 'a') {
@@ -118,36 +123,24 @@ public class Game implements MouseListener, KeyListener, ActionListener {
         }
     }
 
-    // unused KeyListener methods
-    public void keyTyped(KeyEvent e) { }
-
-    // unused MouseListener methods
-    public void mousePressed(MouseEvent e) {
-//		if (SwingUtilities.isLeftMouseButton(e)) {
-//
-//		} else if (SwingUtilities.isRightMouseButton(e))  {
-//
-//		}
-//
-//		view.repaint();
-    }
-    public void mouseReleased(MouseEvent e) {    }
-    public void mouseEntered(MouseEvent e) {    }
-    public void mouseExited(MouseEvent e) {    }
-    public void mouseClicked(MouseEvent e) {    }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand() == "Pause/Resume") {
-            pause();
-        } else if (evt.getActionCommand().equals("Save Game")) {
-            saveGame();
-        } else if (evt.getActionCommand().equals("Load Game")) {
-            loadGame();
-        } else if (evt.getActionCommand().equals("Instructions")) {
-            displayInstructions();
-        } else if (evt.getActionCommand().equals("Exit")) {
-            System.exit(0);
+        switch (evt.getActionCommand()) {
+            case "Pause/Resume":
+                pause();
+                break;
+            case "Save Game":
+                saveGame();
+                break;
+            case "Load Game":
+                loadGame();
+                break;
+            case "Instructions":
+                displayInstructions();
+                break;
+            case "Exit":
+                System.exit(0);
         }
     }
 }

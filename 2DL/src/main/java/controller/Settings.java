@@ -3,22 +3,31 @@ package controller;
 import javax.swing.*;
 
 public abstract class Settings {
+
     public enum VelocityState {
         LEFT, RIGHT, STILL
     }
 
     public static String gameName = "2DL Engine";
-    public static String winningText = "\nCongratulations";
-    public static String losingText = "Don't feel bad";
+    public static String winningText = "\nCongratulations, you've managed to recover the ancient relic.\n\nWell, *one* of them....";
+    public static String losingText = "Don't feel bad, thousands have tried and failed before you...";
 
     public static int windowWidth = 1500;
     public static int windowHeight = 800;
 
-    public static String instructionText = "";
+    public static String instructionText =
 
-    public static final int characterHitBox = 40; // pixels between player and edge of player image
-    public static final int characterHitBoxTop = 20; // pixels between player and top edge of player image
-    public static final int characterSize = 105; // 105x105
+            "Welcome Samurai! We need your help in recovering an ancient relic!\n" +
+                    "But watch out, as it's guarded by knights of the undead....\n\n" +
+                    "How to play:\n" +
+                    "A - move left\nD - move right\nSpace - Jump (double tap in air to double jump)\nEnter - Throw a shuriken (up to 3 can be thrown at once!)\n" +
+                    "p - Pause/Resume the game\ni - Display these instructions\n\n" +
+                    "Good luck and hurry, for time is running out...";
+
+    public static final int characterHitBox = 30; // pixels between player and edge of player image
+    public static final int characterHitBoxTop = 10; // pixels between player and top edge of player image
+    public static final int characterSize = 96; // 105x105
+    public static final int characterSpeed = 8;
 
     public static final int fireballExpireDist = 200; // fireballs expire after travelling 400px
 
@@ -27,5 +36,6 @@ public abstract class Settings {
     public static final int enemyAttackLength = 54; // Skeleton will be in attacking animation for 54 frames.
 
     public static final String assetDirectory = "assets/";
+
 
 }

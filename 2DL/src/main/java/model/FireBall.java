@@ -13,7 +13,7 @@ public class FireBall extends Textures{
     public FireBall(double playerX, double playerY, boolean throwRight) {
         super("fireball.gif", 120, 120, false);
         xPos = playerX + ((throwRight) ? Settings.characterHitBox - 40 : Settings.characterHitBox -40);
-        yPos = playerY - 10; // throw from arm height, not head height
+        yPos = playerY - 10;
         this.throwRight = throwRight;
         this.expired = false;
         count = 4;

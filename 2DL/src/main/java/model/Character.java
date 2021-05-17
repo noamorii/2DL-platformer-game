@@ -1,39 +1,30 @@
 package model;
 
 import controller.Settings;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Character extends Textures{
 
-    private Level level;
-
     private double prev_X;
     private double prev_Y;
-    public static int hp;
+    private static int hp;
+    private static boolean hasKey;
     private static final int accel = 3;
     private int velocity;
     private Settings.VelocityState velocityState;
-    private transient ArrayList<Image> player_sprites;
     private boolean inAir;
     private boolean hasDoubleJump;
     private boolean facingRight;
     private boolean dead;
-    private int imageIndex;
 
     public void loadImages() {
-
     }
 
     public Character() {
 
-        super("player0.png", Settings.characterSize, Settings.characterSize, false);
+        super("player_right.png", Settings.characterSize, Settings.characterSize, false);
         velocity = 0;
+        hasKey = false;
         hp = 3;
         inAir = true;
         hasDoubleJump = true;
@@ -41,8 +32,27 @@ public class Character extends Textures{
         dead = false;
         xPos = 90;
         yPos = 530;
-        imageIndex = 0;
         loadImages();
+    }
+
+    public static int getHp() {
+        return hp;
+    }
+
+    public static boolean getKeyStatus() {
+        return hasKey;
+    }
+
+    public void setKeyStatus(boolean status) {
+        hasKey = status;
+    }
+
+    public void getDamage() {
+        if (hp > 1) {
+            hp--;
+        } else {
+            kill();
+        }
     }
 
     public int getVelocity() {
@@ -56,11 +66,6 @@ public class Character extends Textures{
     public boolean isAirborne() {
 
         return inAir;
-    }
-
-    public boolean hasDoubleJump() {
-
-        return hasDoubleJump;
     }
 
     public void setDoubleJump(boolean doubleJump) {
@@ -94,15 +99,8 @@ public class Character extends Textures{
         }
     }
 
-    public void attack(){
-        if (velocityState == Settings.VelocityState.LEFT){
-            image = new ImageIcon(Settings.assetDirectory + "attack_left.gif").getImage();
-        } else if (velocityState == Settings.VelocityState.RIGHT) {
-            image = new ImageIcon(Settings.assetDirectory + "attack_right.gif").getImage();
-        }
-    }
-
     public void jump() {
+
         if (hasDoubleJump) {
             if (inAir) {
                 hasDoubleJump = false;
@@ -110,7 +108,6 @@ public class Character extends Textures{
             velocity = -22;
             inAir = true;
             image = facingRight ? new ImageIcon(Settings.assetDirectory + "player_jump_right.gif").getImage() : new ImageIcon(Settings.assetDirectory + "player_jump_left.gif").getImage();
-
         }
     }
 
@@ -173,24 +170,28 @@ public class Character extends Textures{
         return prev_Y;
     }
 
+    public double getX() {
+        return xPos; }
+
+    public double getY() {
+        return yPos;
+    }
+
     public void updateInfo() {
+
         // store previous coordinates for collisions logic
         prev_X = xPos;
         prev_Y = yPos;
 
         // update player info based on world physics
         if (velocityState == Settings.VelocityState.LEFT) {
-            xPos -= 8;
+            xPos -= Settings.characterSpeed;
         } else if (velocityState == Settings.VelocityState.RIGHT) {
-            xPos += 8;
+            xPos += Settings.characterSpeed;
         }
         yPos += velocity;
         velocity += accel;
 
-        // Keep the player from falling out of the world
-//        if (yPos + imageHeight >= Definitions.worldHeight) {
-//            yPos = Definitions.worldHeight - imageHeight;
-//        }
     }
 
     public boolean overlaps(Textures s) {
@@ -204,10 +205,7 @@ public class Character extends Textures{
         if (yPos + imageHeight < s.getY()) {
             return false;
         }
-        if (yPos + Settings.characterHitBoxTop > s.getY() + s.getHeight()) {
-            return false;
-        }
-        return true;
+        return !(yPos + Settings.characterHitBoxTop > s.getY() + s.getHeight());
     }
 
     @Override

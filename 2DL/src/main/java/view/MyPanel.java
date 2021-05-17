@@ -12,45 +12,41 @@ class MyPanel extends JPanel {
     private final Game game;
 
     MyPanel(Game gm) {
-
         game = gm;
-        addMouseListener(gm);
     }
 
     public void paintComponent(Graphics g) {
+
         game.update(g);
 
-        Font player = new Font("Courier New", Font.BOLD, 50);
         Image heart = new ImageIcon(Settings.assetDirectory + "green_heart.png").getImage();
         Image emptyHeart = new ImageIcon(Settings.assetDirectory + "empty_heart.png").getImage();
-        g.setFont(player);
+        Image keySlot = new ImageIcon(Settings.assetDirectory + "key.png").getImage();
         g.setColor(Color.black);
 
+        g.drawImage(emptyHeart, 30, 30, 70, 65, null);
+        g.drawImage(emptyHeart, 120, 30, 70, 65, null);
+        g.drawImage(emptyHeart, 210, 30, 70, 65, null);
 
-        if (Character.hp == 3) {
+        if (Character.getHp() == 3) {
             g.drawImage(heart, 30, 30, 70, 65, null);
             g.drawImage(heart, 120, 30, 70, 65, null);
             g.drawImage(heart, 210, 30, 70, 65, null);
-        } else if (Character.hp == 2) {
+
+        } else if (Character.getHp() == 2) {
+
             g.drawImage(heart, 30, 30, 70, 65, null);
             g.drawImage(heart, 120, 30, 70, 65, null);
-            g.drawImage(emptyHeart, 210, 30, 70, 65, null);
-        } else if (Character.hp == 1) {
-            g.drawImage(heart, 30, 30, 70, 65, null);
-            g.drawImage(emptyHeart, 120, 30, 70, 65, null);
-            g.drawImage(emptyHeart, 210, 30, 70, 65, null);
         } else {
-            g.drawImage(emptyHeart, 30, 30, 70, 65, null);
-            g.drawImage(emptyHeart, 120, 30, 70, 65, null);
-            g.drawImage(emptyHeart, 210, 30, 70, 65, null);
-
+            g.drawImage(heart, 30, 30, 70, 65, null);
         }
 
-
-
-//        g.drawString("" + Character.hp, 75, 75);
+        if (Character.getKeyStatus()) {
+            g.drawImage(keySlot, 40, 120, 50, 50, null);
+        }
 
         revalidate();
+
     }
 
     public JMenuBar showOptions(Game gm) {

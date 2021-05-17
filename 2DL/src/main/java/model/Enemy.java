@@ -2,7 +2,6 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 import controller.Settings;
 
@@ -11,17 +10,26 @@ public class Enemy extends Textures {
     private boolean dead;
     private boolean attackingLeft;
     private boolean attackingRight;
-    private int framesSinceDeath;
-    private int framesSinceAttack;
+    private int framesSinceDeath; // used so that the model doesnt remove the skeleton until a certain number of frames have been rendered, allowing for the death animation to play out
+    private int framesSinceAttack; // used to keep track of how many times attacking animation has been rendered to the screen to prevent switching back to walk animation too soon or too late
     private boolean walkingRight;
     private double maxPos;
-    public static int hp;
+    private int hp;
     private double minPos;
     private double xPosBeforeAttack;
     private double yPosBeforeAttack;
 
     public static void setPlayer(Character p) {
         player = p;
+    }
+
+    public void damaged() {
+        if (hp != 1){
+            hp--;
+        } else {
+            kill();
+            incrementFramesSinceDeath();
+        }
     }
 
     public Enemy(int x, int y, int roamDist) {
@@ -39,9 +47,7 @@ public class Enemy extends Textures {
     }
 
     public void kill() {
-//        if (hp != 1){
-//            hp--;
-//        }else {
+
         if (isAttacking()) {
             resetFromAttack();
         }
@@ -51,7 +57,6 @@ public class Enemy extends Textures {
             xPos -= 20;
         }
         hp = 3;
-//        }
     }
 
     public boolean isDead() {
@@ -148,9 +153,6 @@ public class Enemy extends Textures {
 
     public void update(Graphics g) {
         if (!dead) {
-            Font skeleton = new Font("Courier New", Font.BOLD, 24);
-            g.setFont(skeleton);
-            g.setColor(Color.black);
 
             Image h3 = new ImageIcon(Settings.assetDirectory + "h3.png").getImage();
             Image h2 = new ImageIcon(Settings.assetDirectory + "h2.png").getImage();
@@ -167,7 +169,6 @@ public class Enemy extends Textures {
                 g.drawImage(h0, (int)xPos + 35, (int)yPos - 10, 25, 22, null);
             }
 
-//            g.drawString("" + hp, (int)xPos + 20, (int)yPos);
             if (isAttacking()) {
                 if (framesSinceAttack == Settings.enemyAttackDist) {
                     resetFromAttack();
@@ -182,12 +183,8 @@ public class Enemy extends Textures {
                     framesSinceAttack++;
                 }
 
-                if (framesSinceAttack == 15 && overlaps(player)) { //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-                    if (Character.hp > 1) {
-                        Character.hp--;
-                    } else {
-                        player.kill();
-                    }
+                if (framesSinceAttack == 15 && overlaps(player)) {//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                    player.getDamage();
                 }
             } else if (playerInAttackDistance()) {
                 if (player.getX() <= xPos) {

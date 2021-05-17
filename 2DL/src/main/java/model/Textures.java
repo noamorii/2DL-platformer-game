@@ -72,11 +72,14 @@ public class Textures implements Serializable {
     }
 
     public void setImage(String imagePath) {
-        try {
-            image = ImageIO.read(new File(imagePath));
-        } catch (IOException ioe) {
-            System.out.println("Unable to load image file.");
+        if (!imagePath.equals(Settings.assetDirectory + "")) {
+            try {
+                image = ImageIO.read(new File(imagePath));
+            } catch (IOException ioe) {
+                System.out.println("Unable to load image file.");
+            }
         }
+
     }
 
     public void setGif(String imagePath) {
@@ -98,9 +101,9 @@ public class Textures implements Serializable {
     public boolean overlaps(Textures tex) {
 
         double object1XLeft = this.xPos;
-        double object1YDown = this.yPos;
+        double object1YUp = this.yPos;
         double object1XRight = this.xPos + imageWidth;
-        double object1YUp = this.yPos + imageWidth;
+        double object1YDown = this.yPos + imageWidth;
 
         double object2XLeft = tex.xPos;
         double object2YDown = tex.yPos;
@@ -109,9 +112,8 @@ public class Textures implements Serializable {
 
         return (object1XLeft < object2XRight &&
                 object1XRight > object2XLeft &&
-                object1YDown < object2YUp &&
-                object1YUp > object2YDown);
-
+                object1YUp < object2YUp &&
+                object1YDown > object2YDown);
     }
 
 }

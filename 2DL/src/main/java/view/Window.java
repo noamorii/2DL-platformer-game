@@ -13,6 +13,9 @@ public class Window extends JFrame implements ActionListener{
         // Define the viewing window and viewing properties
         setTitle(Settings.gameName);
         setSize(Settings.windowWidth, Settings.windowHeight);
+        requestFocus();
+        setLocation(210, 125);
+
 
         getContentPane().add(new MyPanel(gm));
 
@@ -24,6 +27,7 @@ public class Window extends JFrame implements ActionListener{
         MyPanel myPanel = new MyPanel(gm);
         JMenuBar mainMenu = myPanel.showOptions(gm);
         this.setJMenuBar(mainMenu);
+
     }
 
     @Override
