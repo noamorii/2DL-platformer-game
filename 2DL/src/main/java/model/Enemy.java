@@ -2,10 +2,14 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Logger;
 
 import controller.Settings;
 
 public class Enemy extends Textures {
+
+    private static final Logger logger = Logger.getLogger("model.Enemy");
+
     private static Character player;
     private boolean dead;
     private boolean attackingLeft;
@@ -44,6 +48,12 @@ public class Enemy extends Textures {
         attackingRight = false;
         walkingRight = true;
         framesSinceDeath = 3;
+
+        logger.info("Enemy created (" + Enemy.this + ")");
+    }
+
+    public int getHp() {
+        return hp;
     }
 
     public void kill() {
@@ -57,6 +67,7 @@ public class Enemy extends Textures {
             xPos -= 20;
         }
         hp = 3;
+        logger.info("Enemy (" + Enemy.this + ") was killed");
     }
 
     public boolean isDead() {
@@ -183,7 +194,7 @@ public class Enemy extends Textures {
                     framesSinceAttack++;
                 }
 
-                if (framesSinceAttack == 15 && overlaps(player)) {//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                if (framesSinceAttack == 15 && overlaps(player)) {
                     player.getDamage();
                 }
             } else if (playerInAttackDistance()) {

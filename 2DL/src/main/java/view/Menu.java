@@ -1,88 +1,127 @@
 package view;
 
-
 import controller.Game;
 import controller.Settings;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.logging.Logger;
 
 
-public class Menu extends JFrame implements ActionListener {
+public class Menu extends JPanel implements ActionListener {
 
-    public static boolean startButtonPressed;
-    private static final long serialVersionUID = 1L;
+    JButton newGame, loadGame, exit;
+    private static final Logger logger = Logger.getLogger("view.Window");
 
-    int width, height;
+    public Menu() {
 
-    JButton play, playOnline, exit;
-    CardLayout layout = new CardLayout();
+        JFrame jFrame = new JFrame();
+        jFrame.getContentPane().add(this);
+        jFrame.setSize(Settings.windowWidth, Settings.windowHeight);
+        jFrame.requestFocus();
+        jFrame.setLocation(0,0);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.setResizable(false);
 
-    JPanel panel = new JPanel();
-    //JPanel game = new JPanel();
-    JPanel menu = new JPanel();
-    JLabel lblNewLabel = new JLabel();
+        logger.info("Menu window was created and opened");
 
-    public void paintComponent(Graphics g) {
+        setBounds(0, 0, Settings.windowWidth, Settings.windowHeight);
+        setLayout(null);
 
-    }
-
-    public Menu(int width, int height) {
-
-        panel.setLayout(layout);
-        addButtons();
-
-        setSize(width, height);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        setTitle(Settings.gameName);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         requestFocus();
-        startButtonPressed = false;
-    }
 
-    private void addButtons() {
+        newGame = new JButton("NewGame");
+        loadGame = new JButton("LoadGame");
+        exit = new JButton("Exit");
 
-        play = new JButton("play");
-        playOnline = new JButton("play with friend");
-        exit = new JButton("exit");
+        newGame.setIcon(new ImageIcon(Settings.assetDirectory + "newGameW.png"));
+        addButton(newGame, 100,280,430,120);
 
-        play.addActionListener(this);
-        playOnline.addActionListener(this);
+        loadGame.setIcon(new ImageIcon(Settings.assetDirectory + "loadGameW.png"));
+        addButton(loadGame, 100,430,430,120);
+
+        exit.setIcon(new ImageIcon(Settings.assetDirectory + "exitGameW.png"));
+        addButton(exit, 100,580,430,120);
+
+        jFrame.setVisible(true);
+        newGame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                newGame.setIcon(new ImageIcon(Settings.assetDirectory + "newGameP.png"));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                newGame.setIcon(new ImageIcon(Settings.assetDirectory + "newGameW.png"));
+            }
+
+            public void mouseReleased(MouseEvent evt) {
+                new Game();
+                jFrame.dispose();
+
+            }
+        });
+
+        loadGame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loadGame.setIcon(new ImageIcon(Settings.assetDirectory + "loadGameP.png"));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                loadGame.setIcon(new ImageIcon(Settings.assetDirectory + "loadGameW.png"));
+            }
+
+            public void mouseClicked(MouseEvent evt) {
+                new Game().loadGame();
+                jFrame.dispose();
+            }
+        });
+
+        exit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exit.setIcon(new ImageIcon(Settings.assetDirectory + "exitGameP.png"));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                exit.setIcon(new ImageIcon(Settings.assetDirectory + "exitGameW.png"));
+            }
+
+            public void mouseClicked(MouseEvent evt) {
+                System.exit(0);
+            }
+        });
+
+        newGame.addActionListener(this);
+        loadGame.addActionListener(this);
         exit.addActionListener(this);
 
-        //menu buttons
-        menu.add(play);
-        menu.add(playOnline);
-        menu.add(exit);
-        //background colors
-        lblNewLabel.setIcon(new ImageIcon("assets/background.png"));
-        menu.add(lblNewLabel);
 
-        //adding children to parent Panel
-        panel.add(menu,"Menu");
-        //panel.add(game,"Game");
+    }
 
-        add(panel);
-        layout.show(panel,"Menu");
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Image heart = new ImageIcon(Settings.assetDirectory + "menu.png").getImage();
+        g.drawImage(heart, 0, 0, Settings.windowWidth, Settings.windowHeight, this);
+
+    }
+
+    public void addButton(JButton button, int x, int y, int width, int height) {
+
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setBorder(null);
+        button.setFocusPainted(false);
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBounds(x,y,width,height);
+        add(button);
 
     }
 
     public void actionPerformed(ActionEvent event) {
 
-        Object source = event.getSource();
-
-        if (source == exit) {
-            System.exit(0);
-        } else if (source == play) {
-            setVisible(false); //you can't see me!
-            new Game();
-            dispose(); //Destroy the JFrame object
-        } else if (source == playOnline){
-            //TODO: make a multiplayer package for launching a game for 2 people
-        }
     }
 }
+

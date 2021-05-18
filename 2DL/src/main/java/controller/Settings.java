@@ -8,6 +8,10 @@ public abstract class Settings {
         LEFT, RIGHT, STILL
     }
 
+    public enum ViewState {
+        START_STATE, NEXT_STATE;
+    }
+
     public static String gameName = "2DL Engine";
     public static String winningText = "\nCongratulations, you've managed to recover the ancient relic.\n\nWell, *one* of them....";
     public static String losingText = "Don't feel bad, thousands have tried and failed before you...";

@@ -9,23 +9,33 @@ import java.io.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
+
 import static java.awt.event.KeyEvent.VK_ENTER;
 
-public class Game implements  KeyListener, ActionListener {
+public class Game implements KeyListener, ActionListener {
 
     private static Timer timer;
     private final Window window;
     private static boolean paused;
+    private static boolean wasSaved;
     private Level level;
 
+    private static final Logger logger = Logger.getLogger("controller.Game");
+
     public Game() {
+
+        wasSaved = false;
         paused = false;
         window = new Window(this);
         level = new Level();
+        level.setUpLevel(level);
         timer = new Timer(20, window);
-
         timer.start();
         displayInstructions();
+        logger.info("Game class called");
+
+
     }
 
     public void update(Graphics g) {
@@ -34,11 +44,13 @@ public class Game implements  KeyListener, ActionListener {
             if (level.gameIsOver()) {
                 timer.stop();
                 if (level.playerWon()) {
+                    logger.info("Player won");
                     JOptionPane.showMessageDialog(window, Settings.winningText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(window, Settings.losingText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
                 }
                 level = new Level();
+                level.setUpLevel(level);
                 timer.start();
             } else {
                 level.update(g);
@@ -51,14 +63,17 @@ public class Game implements  KeyListener, ActionListener {
         if (!paused) {
             paused = true;
             timer.stop();
+            logger.info("Game paused");
         } else {
             paused = false;
             timer.start();
+            logger.info("Game unpaused");
         }
     }
 
     public void saveGame() {
 
+        wasSaved = true;
         level.saveImages();
 
         try {
@@ -70,27 +85,40 @@ public class Game implements  KeyListener, ActionListener {
 
         } catch (IOException i) {
             i.printStackTrace();
+            logger.warning(i.getMessage());
+
         }
+
+        logger.info("Level saved");
     }
 
     public void loadGame() {
         paused = true;
         timer.stop();
 
-        try {
-            FileInputStream fileStream = new FileInputStream("save.txt");
-            ObjectInputStream in = new ObjectInputStream(fileStream);
-            level = (Level) in.readObject();
-            fileStream.close();
-            in.close();
-        } catch (IOException | ClassNotFoundException i) {
-            i.printStackTrace();
-            System.exit(1);
+        if (!wasSaved) {
+            logger.warning("Game wasn't saved!");
+            Level level = new Level();
+            level.setUpLevel(level);
+        } else {
+            try {
+                FileInputStream fileStream = new FileInputStream("save.txt");
+                ObjectInputStream in = new ObjectInputStream(fileStream);
+                level = (Level) in.readObject();
+                fileStream.close();
+                in.close();
+            } catch (IOException | ClassNotFoundException i) {
+                i.printStackTrace();
+                logger.warning(i.getMessage());
+                System.exit(1);
+            }
+            level.loadImages();
         }
 
-        level.loadImages();
         paused = false;
         timer.start();
+
+        logger.info("Level loaded");
     }
 
     public void displayInstructions() {
@@ -140,6 +168,7 @@ public class Game implements  KeyListener, ActionListener {
                 displayInstructions();
                 break;
             case "Exit":
+                logger.info("Exit the application");
                 System.exit(0);
         }
     }

@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 public class Textures implements Serializable {
 
@@ -19,6 +20,8 @@ public class Textures implements Serializable {
     protected boolean collidable;
     protected transient Image image;
     protected String currentImagePath; // set on a game save
+
+    private static final Logger logger = Logger.getLogger("model.Textures");
 
     public Textures(String textureName, int width, int height, boolean collidable) {
 
@@ -76,7 +79,7 @@ public class Textures implements Serializable {
             try {
                 image = ImageIO.read(new File(imagePath));
             } catch (IOException ioe) {
-                System.out.println("Unable to load image file.");
+                logger.warning("Unable to load image file.");
             }
         }
 

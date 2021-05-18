@@ -5,90 +5,123 @@ import controller.Settings;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 
 public class Level implements Serializable {
 
     private final ArrayList<Textures> texturesArrayList;
-    private final Textures goblet;
+    private final Textures flag;
     private final Character character;
     private final Key key;
     private boolean gameIsOver;
     private boolean won;
+    private static final Logger logger = Logger.getLogger("model.Level");
 
     public Level() {
 
+        logger.info("New level created");
+        character = new Character();
+        key = new Key(800, 300);
+        flag = new Textures("flag.gif", 75, 150, false).setX(1380).setY(0);
         gameIsOver = false;
         won = false;
-
         texturesArrayList = new ArrayList<>(); //List of all textures
-
-        texturesArrayList.add(new Textures("background.png", 1500, 800, false));
-
-        // Level decoration
-        texturesArrayList.add(new Textures("Plants_03.png", 300, 180, false).setXsetY(-65,550));
-        texturesArrayList.add(new Textures("Plants_07.png", 150, 180, false).setXsetY(360,550));
-        texturesArrayList.add(new Textures("Plants_07.png", 100, 100, false).setXsetY(480,620));
-        texturesArrayList.add(new Textures("Plants_03.png", 150, 90, false).setXsetY(1250,520));
-
-        texturesArrayList.add(new Textures("Plants_12.png", 150, 150, false).setXsetY(220,350));
-        texturesArrayList.add(new Textures("Plants_12.png", 150, 150, false).setXsetY(520,80));
-        texturesArrayList.add(new Textures("Plants_12.png", 150, 150, false).setXsetY(900,380));
-
-        // Set goblet
-        goblet = new Textures("goblet.png", 70, 70, false).setX(1400).setY(95);
-        texturesArrayList.add(goblet);
-
-        // Set key
-        key = new Key(800, 300);
-        texturesArrayList.add(key);
-
-        // Set character
-        character = new Character();
-        texturesArrayList.add(character);
-
-        // Set enemies
-        texturesArrayList.add(new Enemy(875, 380, 180));
-        texturesArrayList.add(new Enemy(375, 330, 180));
-        texturesArrayList.add(new Enemy(675, 105, 180));
-
-        // Set hearts
-
-
-        //map
-        texturesArrayList.add(new Textures("", 230, 40, true).setXsetY(0,700));
-        texturesArrayList.add(new Textures("platform3.png", 285, 120, false).setXsetY(-35,680));
-
-        texturesArrayList.add(new Textures("", 350, 40, true).setXsetY(325,700));
-        texturesArrayList.add(new Textures("platform2.png", 400, 150, false).setXsetY(300,675));
-
-        texturesArrayList.add(new Textures("", 250, 40, true).setXsetY(850,700));
-        texturesArrayList.add(new Textures("platform3.png", 300, 140, false).setXsetY(825,680));
-
-        texturesArrayList.add(new Textures("", 200, 40, true).setXsetY(1200,600));
-        texturesArrayList.add(new Textures("platform3.png", 265, 110, false).setXsetY(1170,580));
-
-        texturesArrayList.add(new Textures("", 400, 40, true).setXsetY(700,475));
-        texturesArrayList.add(new Textures("platform.png", 465, 120, false).setXsetY(675,460));
-
-        texturesArrayList.add(new Textures("", 400, 40, true).setXsetY(200,425));
-        texturesArrayList.add(new Textures("platform.png", 470, 120, false).setXsetY(175,415));
-
-        texturesArrayList.add(new Textures("", 200, 40, true).setXsetY(150,250));
-        texturesArrayList.add(new Textures("platform3.png", 250, 110, false).setXsetY(125,225));
-
-        texturesArrayList.add(new Textures("", 400, 40, true).setXsetY(500,200));
-        texturesArrayList.add(new Textures("platform.png", 460, 120, false).setXsetY(475,185));
-
-        texturesArrayList.add(new Textures("", 200, 40, true).setXsetY(1000,200));
-        texturesArrayList.add(new Textures("platform3.png", 265, 110, false).setXsetY(975,180));
-
-        texturesArrayList.add(new Textures("", 200, 40, true).setXsetY(1350,150));
-        texturesArrayList.add(new Textures("platform3.png", 265, 110, false).setXsetY(1325,125));
-
-        Enemy.setPlayer(character); // give skeletons the player to attack
     }
+
+    public void setUpLevel(Level level) {
+        level.setDecorations();
+        level.setEnemies();
+        level.setFlag();
+        level.setKey();
+        level.setCharacter();
+        level.setPlatforms();
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public Key getKey() {
+        return key;
+    }
+
+    public void setDecorations() {
+        addToArrayList(new Textures("background.png", 1500, 800, false));
+        // Level decoration
+        addToArrayList(new Textures("Plants_03.png", 300, 180, false).setXsetY(-65,550));
+        addToArrayList(new Textures("Plants_07.png", 150, 180, false).setXsetY(360,550));
+        addToArrayList(new Textures("Plants_07.png", 100, 100, false).setXsetY(480,620));
+        addToArrayList(new Textures("Plants_03.png", 150, 90, false).setXsetY(1250,520));
+
+        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(220,350));
+        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(520,80));
+        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(900,380));
+    }
+
+    public void setCharacter() {
+        addToArrayList(character);
+        Enemy.setPlayer(character);
+    }
+
+    public void setFlag() {
+        addToArrayList(flag);
+    }
+
+    public void addToArrayList(Textures textures) {
+        texturesArrayList.add(textures);
+    }
+
+    public void setKey() {
+        addToArrayList(key);
+    }
+
+    public void setEnemies() {
+
+        addToArrayList(new Enemy(875, 380, 180));
+        addToArrayList(new Enemy(375, 330, 180));
+        addToArrayList(new Enemy(675, 105, 180));
+    }
+
+    public void setPlatforms() {
+
+
+        addToArrayList(new Textures("", 230, 40, true).setXsetY(0,700));
+        addToArrayList(new Textures("platform3.png", 285, 120, false).setXsetY(-35,680));
+
+        addToArrayList(new Textures("", 325, 40, true).setXsetY(340,700));
+        addToArrayList(new Textures("platform2.png", 400, 150, false).setXsetY(300,675));
+
+        addToArrayList(new Textures("", 250, 40, true).setXsetY(850,700));
+        addToArrayList(new Textures("platform3.png", 300, 140, false).setXsetY(825,680));
+
+        addToArrayList(new Textures("", 200, 40, true).setXsetY(1200,600));
+        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(1170,580));
+
+        addToArrayList(new Textures("", 400, 40, true).setXsetY(700,475));
+        addToArrayList(new Textures("platform.png", 465, 120, false).setXsetY(675,460));
+
+        addToArrayList(new Textures("", 400, 40, true).setXsetY(200,425));
+        addToArrayList(new Textures("platform.png", 470, 120, false).setXsetY(175,415));
+
+        addToArrayList(new Textures("", 200, 40, true).setXsetY(150,250));
+        addToArrayList(new Textures("platform3.png", 250, 110, false).setXsetY(125,225));
+
+        addToArrayList(new Textures("", 400, 40, true).setXsetY(500,200));
+        addToArrayList(new Textures("platform.png", 460, 120, false).setXsetY(475,185));
+
+        addToArrayList(new Textures("", 200, 40, true).setXsetY(1000,200));
+        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(975,180));
+
+        addToArrayList(new Textures("", 200, 40, true).setXsetY(1350,150));
+        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(1325,125));
+    }
+
+
+
+
 
     public void update(Graphics g) {
         Iterator<Textures> iter = texturesArrayList.iterator();
@@ -101,13 +134,15 @@ public class Level implements Serializable {
                     ((Character) texture).setKeyStatus(true);
                     key.setTaken(true);
                 }
-                if (texture.overlaps(goblet) && Character.getKeyStatus()) {
+                if (texture.overlaps(flag) && Character.getKeyStatus()) {
+                    logger.info("Player reached the end with the key");
                     gameIsOver = true;
                     won = true;
                 } else {
                     ((Character) texture).updateInfo();
                     fixCollisions();
                     if (texture.getY() >= Settings.windowHeight || character.isDead()) {
+                        logger.info("Player is dead");
                         gameIsOver = true;
                     }
                 }
@@ -120,6 +155,7 @@ public class Level implements Serializable {
 
             } else if ((texture instanceof Key)) {
                 if (((Key) texture).getTakenStatus()) {
+                    logger.info("Player picked up the key");
                     iter.remove();
                 }
 
@@ -131,7 +167,6 @@ public class Level implements Serializable {
                         ((Enemy) texture).incrementFramesSinceDeath();
                     }
                 } else {
-
                     for (Textures fireball : texturesArrayList) {
                         if (fireball instanceof FireBall && texture.overlaps(fireball)) {
                             ((Enemy) texture).damaged();
@@ -140,7 +175,9 @@ public class Level implements Serializable {
                     }
                 }
             }
-            texture.update(g);
+            if (g != null) {
+                texture.update(g);
+            }
         }
     }
 
@@ -176,11 +213,10 @@ public class Level implements Serializable {
         setPlayerDirection(state);
     }
 
-    private void fixCollisions() {
+    public void fixCollisions() {
         for (Textures s : texturesArrayList) {
 
             if (!(s instanceof Character) && s.isCollidable() && character.overlaps(s)) {// then there is a collision that needs to be resolved
-
                 if (character.getPrev_X() + Settings.characterSize - Settings.characterHitBox < s.getX()) {
                     character.setX(s.getX() - Settings.characterSize + Settings.characterHitBox - 1); //when character goes from the left
 

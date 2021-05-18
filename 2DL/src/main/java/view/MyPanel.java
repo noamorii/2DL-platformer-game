@@ -13,6 +13,7 @@ class MyPanel extends JPanel {
 
     MyPanel(Game gm) {
         game = gm;
+
     }
 
     public void paintComponent(Graphics g) {
@@ -22,7 +23,6 @@ class MyPanel extends JPanel {
         Image heart = new ImageIcon(Settings.assetDirectory + "green_heart.png").getImage();
         Image emptyHeart = new ImageIcon(Settings.assetDirectory + "empty_heart.png").getImage();
         Image keySlot = new ImageIcon(Settings.assetDirectory + "key.png").getImage();
-        g.setColor(Color.black);
 
         g.drawImage(emptyHeart, 30, 30, 70, 65, null);
         g.drawImage(emptyHeart, 120, 30, 70, 65, null);

@@ -3,12 +3,13 @@ package model;
 import controller.Settings;
 
 import java.awt.*;
+import java.util.logging.Logger;
 
 public class FireBall extends Textures{
     private static int count;
-    private boolean throwRight;
+    private final boolean throwRight;
     private boolean expired;
-    private double initialX;
+    private final double initialX;
 
     public FireBall(double playerX, double playerY, boolean throwRight) {
         super("fireball.gif", 120, 120, false);
@@ -18,7 +19,6 @@ public class FireBall extends Textures{
         this.expired = false;
         count = 4;
         this.initialX = xPos;
-
 
     }
 

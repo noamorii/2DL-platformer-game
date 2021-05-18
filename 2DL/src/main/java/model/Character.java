@@ -2,6 +2,7 @@ package model;
 
 import controller.Settings;
 import javax.swing.*;
+import java.util.logging.Logger;
 
 public class Character extends Textures{
 
@@ -17,8 +18,7 @@ public class Character extends Textures{
     private boolean facingRight;
     private boolean dead;
 
-    public void loadImages() {
-    }
+    private static final Logger logger = Logger.getLogger("model.Character");
 
     public Character() {
 
@@ -32,12 +32,14 @@ public class Character extends Textures{
         dead = false;
         xPos = 90;
         yPos = 530;
-        loadImages();
+        logger.info("Character created");
+
     }
 
     public static int getHp() {
         return hp;
     }
+
 
     public static boolean getKeyStatus() {
         return hasKey;
@@ -53,6 +55,7 @@ public class Character extends Textures{
         } else {
             kill();
         }
+        logger.info("Player was damaged");
     }
 
     public int getVelocity() {
@@ -149,12 +152,11 @@ public class Character extends Textures{
     }
 
     public void kill() {
-
         dead = true;
+        logger.info("Player was killed");
     }
 
     public boolean isDead() {
-
         return dead;
     }
 
@@ -214,7 +216,6 @@ public class Character extends Textures{
 
     @Override
     public void loadImage() {
-        loadImages();
         image = new ImageIcon(Settings.assetDirectory + "player_right.png").getImage();
     }
 }
