@@ -3,6 +3,7 @@ package view;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -25,6 +26,8 @@ public class Sound {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInput);
+                FloatControl vc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                vc.setValue(-20);
                 clip.start();
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
                 logger.info("Sound loaded");
