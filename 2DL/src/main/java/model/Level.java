@@ -51,6 +51,10 @@ public class Level implements Serializable {
         level.setPlatforms();
     }
 
+    public ArrayList<Textures> getArray() {
+        return texturesArrayList;
+    }
+
     public Character getCharacter() {
         return character;
     }

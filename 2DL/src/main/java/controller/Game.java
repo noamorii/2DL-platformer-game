@@ -164,6 +164,7 @@ public class Game implements KeyListener, ActionListener {
                 logger.warning(i.getMessage());
                 System.exit(1);
             }
+            Enemy.setPlayer(level.getCharacter());
             level.loadImages();
         }
 
@@ -224,7 +225,7 @@ public class Game implements KeyListener, ActionListener {
                 break;
             case "Load Game":
                 loadGame();
-                Enemy.setPlayer(level.getCharacter());
+
                 break;
             case "Instructions":
                 displayInstructions();

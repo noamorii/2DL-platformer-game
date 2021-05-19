@@ -2,7 +2,6 @@
 import controller.Settings;
 import model.*;
 import model.Character;
-
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -142,8 +141,55 @@ public class GameTest {
 
         assertEquals(expectedResult, character.getX());
 
+    }
 
+    @Test
+    public void testSetDirection() {
 
+        Level level = new Level();
+        level.setCharacter();
+        Character character = level.getCharacter();
+
+        character.setDirection(Settings.VelocityState.LEFT);
+
+        assertFalse(character.isFacingRight());
+
+    }
+
+    @Test
+    public void testAddToArray() {
+
+        Level level = new Level();
+        level.setPlatforms();
+
+        int result = (level.getArray()).size();
+
+        assertEquals(20, result);
+    }
+
+    @Test
+    public void testAddAllToArray() {
+
+        Level level = new Level();
+        level.setUpLevel(level);
+
+        int result = (level.getArray()).size();
+
+        assertEquals(34, result);
+    }
+
+    @Test
+    public void TestLevelKey() {
+        Level level = new Level();
+
+        double resultX = level.getKey().getX();
+        double resultY = level.getKey().getY();
+
+        int expectedX = 800;
+        int expectedY = 300;
+
+        assertEquals(expectedX, resultX);
+        assertEquals(expectedY, resultY);
     }
 
 
