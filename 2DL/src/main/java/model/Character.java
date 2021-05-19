@@ -4,6 +4,13 @@ import controller.Settings;
 import javax.swing.*;
 import java.util.logging.Logger;
 
+/**
+ *  Character class represents a character from texture.
+ *
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @version 1.0
+ * @see Textures
+ */
 public class Character extends Textures{
 
     private double prev_X;
@@ -17,21 +24,30 @@ public class Character extends Textures{
     private boolean hasDoubleJump;
     private boolean facingRight;
     private boolean dead;
+    Level level1;
 
     private static final Logger logger = Logger.getLogger("model.Character");
 
-    public Character() {
+    /**
+     * Basic constructor for Character class.
+     * @param level - represents Level class
+     * @param xPos1 - character position by x
+     * @param yPos1 - character position by y
+     */
+
+    public Character(Level level, int xPos1, int yPos1) {
 
         super("player_right.png", Settings.characterSize, Settings.characterSize, false);
         velocity = 0;
+        level1 = level;
         hasKey = false;
         hp = 3;
         inAir = true;
         hasDoubleJump = true;
         facingRight = true;
         dead = false;
-        xPos = 90;
-        yPos = 530;
+        xPos = xPos1;
+        yPos = yPos1;
         logger.info("Character created");
 
     }
@@ -49,6 +65,9 @@ public class Character extends Textures{
         hasKey = status;
     }
 
+    /**
+     * Calls when character get damage.
+     */
     public void getDamage() {
         if (hp > 1) {
             hp--;
@@ -79,6 +98,10 @@ public class Character extends Textures{
         return facingRight;
     }
 
+    /**
+     * Method that allows you to put the correct image for a character in air and not.
+     * @param inAir - jump status of the Character
+     */
     public void setAirborne(boolean inAir) {
         this.inAir = inAir;
 
@@ -102,6 +125,9 @@ public class Character extends Textures{
         }
     }
 
+    /**
+     * Check if character has doublejump, configure velocity and set right jump animation.
+     */
     public void jump() {
 
         if (hasDoubleJump) {
@@ -110,10 +136,20 @@ public class Character extends Textures{
             }
             velocity = -22;
             inAir = true;
-            image = facingRight ? new ImageIcon(Settings.assetDirectory + "player_jump_right.gif").getImage() : new ImageIcon(Settings.assetDirectory + "player_jump_left.gif").getImage();
+
+            if (facingRight) {
+                image = new ImageIcon(Settings.assetDirectory + "player_jump_right.gif").getImage();
+            } else{
+                image = new ImageIcon(Settings.assetDirectory + "player_jump_left.gif").getImage();
+            }
         }
     }
 
+    /**
+     * Display animation.
+     * The method allows you to display the correct animation depending on the direction of the character and his position.
+     * @param state - direction of the character
+     */
     public void setDirection(Settings.VelocityState state) {
         if (state == Settings.VelocityState.LEFT) {
             if (inAir) {
@@ -139,7 +175,6 @@ public class Character extends Textures{
                 facingRight = true;
             }
         }
-
         velocityState = state;
     }
 
@@ -161,7 +196,6 @@ public class Character extends Textures{
     }
 
     public Settings.VelocityState getVelocityState() {
-
         return velocityState;
     }
 
@@ -179,6 +213,10 @@ public class Character extends Textures{
         return yPos;
     }
 
+
+    /**
+     * Updates character coords.
+     */
     public void updateInfo() {
 
         // store previous coordinates for collisions logic
@@ -196,18 +234,23 @@ public class Character extends Textures{
 
     }
 
-    public boolean overlaps(Textures s) {
+    /**
+     * Method to determine if two textures intersect.
+     * @param tex - texture object
+     * @return boolean value true if texture is overlapping the character
+     */
+    public boolean overlaps(Textures tex) {
 
-        if (xPos + imageWidth - Settings.characterHitBox < s.xPos) {
+        if (xPos + imageWidth - Settings.characterHitBox < tex.xPos) {
             return false;
         }
-        if (xPos + Settings.characterHitBox > s.xPos + s.getWidth()) {
+        if (xPos + Settings.characterHitBox > tex.xPos + tex.getWidth()) {
             return false;
         }
-        if (yPos + imageHeight < s.getY()) {
+        if (yPos + imageHeight < tex.getY()) {
             return false;
         }
-        return !(yPos + Settings.characterHitBoxTop > s.getY() + s.getHeight());
+        return !(yPos + Settings.characterHitBoxTop > tex.getY() + tex.getHeight());
     }
 
     @Override

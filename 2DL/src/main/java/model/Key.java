@@ -2,6 +2,13 @@ package model;
 
 import java.util.logging.Logger;
 
+/**
+ * Key class lets user unlock ability to finish level
+ *
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ * @see Textures
+ */
 public class Key extends Textures{
 
     private boolean isTaken;

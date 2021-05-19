@@ -3,10 +3,15 @@ package view;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.*;
 import java.io.File;
 import java.util.logging.Logger;
 
+/**
+ * Sound class that starts music from /assets/music/ folder
+ *
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ */
 public class Sound {
 
     private static final Logger logger = Logger.getLogger("view.Sound");
@@ -32,6 +37,5 @@ public class Sound {
         }
     }
 }
-
 
 

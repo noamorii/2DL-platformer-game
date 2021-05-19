@@ -1,20 +1,28 @@
 package model;
 
 import controller.Settings;
+import multiplayer.PlayerMP;
 
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-
+/**
+ * Level class spawns all entities and tiles on level
+ *
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ */
 public class Level implements Serializable {
 
     private final ArrayList<Textures> texturesArrayList;
     private final Textures flag;
-    private final Character character;
+    private PlayerMP playerMP;
+    private Character character;
+    //private Character character2;
     private final Key key;
     private boolean gameIsOver;
     private boolean won;
@@ -23,7 +31,6 @@ public class Level implements Serializable {
     public Level() {
 
         logger.info("New level created");
-        character = new Character();
         key = new Key(800, 300);
         flag = new Textures("flag.gif", 75, 150, false).setX(1380).setY(0);
         gameIsOver = false;
@@ -31,6 +38,10 @@ public class Level implements Serializable {
         texturesArrayList = new ArrayList<>(); //List of all textures
     }
 
+    /**
+     * Method to set up the level.
+     * @param level - texture object
+     */
     public void setUpLevel(Level level) {
         level.setDecorations();
         level.setEnemies();
@@ -48,6 +59,9 @@ public class Level implements Serializable {
         return key;
     }
 
+    /**
+     * Method to decorate the level.
+     */
     public void setDecorations() {
         addToArrayList(new Textures("background.png", 1500, 800, false));
         // Level decoration
@@ -61,7 +75,11 @@ public class Level implements Serializable {
         addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(900,380));
     }
 
+    /**
+     * Set character to texture array list
+     */
     public void setCharacter() {
+        character = new Character(this, 90, 530);
         addToArrayList(character);
         Enemy.setPlayer(character);
     }
@@ -78,13 +96,27 @@ public class Level implements Serializable {
         addToArrayList(key);
     }
 
+    /**
+     * Set enemies to texture array list
+     */
     public void setEnemies() {
-
         addToArrayList(new Enemy(875, 380, 180));
         addToArrayList(new Enemy(375, 330, 180));
         addToArrayList(new Enemy(675, 105, 180));
     }
 
+    /**
+     * Set character to texture array list and update
+     */
+    public void addPlayer(Character character2){
+        character2 = new Character(this, 100, 200);
+        addToArrayList(character2);
+        character2.updateInfo();
+    }
+
+    /**
+     * Method to build the level by platforms
+     */
     public void setPlatforms() {
 
 
@@ -119,10 +151,10 @@ public class Level implements Serializable {
         addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(1325,125));
     }
 
-
-
-
-
+    /**
+     * Method update the state of the level and its entities.
+     * @param g - texture object
+     */
     public void update(Graphics g) {
         Iterator<Textures> iter = texturesArrayList.iterator();
         Textures texture;
@@ -140,7 +172,7 @@ public class Level implements Serializable {
                     won = true;
                 } else {
                     ((Character) texture).updateInfo();
-                    fixCollisions();
+                    fixCollisions((Character) texture);
                     if (texture.getY() >= Settings.windowHeight || character.isDead()) {
                         logger.info("Player is dead");
                         gameIsOver = true;
@@ -213,7 +245,11 @@ public class Level implements Serializable {
         setPlayerDirection(state);
     }
 
-    public void fixCollisions() {
+    /**
+     * Method to fix problematic collisions to prevent bugs.
+     * @param character - texture object
+     */
+    public void fixCollisions(Character character) {
         for (Textures s : texturesArrayList) {
 
             if (!(s instanceof Character) && s.isCollidable() && character.overlaps(s)) {// then there is a collision that needs to be resolved
@@ -254,8 +290,4 @@ public class Level implements Serializable {
             texturesArrayList.add(new FireBall(character.getX(), character.getY(), character.isFacingRight()));
         }
     }
-
-
-
-
 }

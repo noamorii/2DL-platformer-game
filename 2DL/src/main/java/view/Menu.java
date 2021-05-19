@@ -2,17 +2,27 @@ package view;
 
 import controller.Game;
 import controller.Settings;
+import model.Textures;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.logging.Logger;
 
-
+/**
+ *  Menu class shows the start menu where you can start or load the game
+ *
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @version 1.0
+ */
 public class Menu extends JPanel implements ActionListener {
 
     JButton newGame, loadGame, exit;
     private static final Logger logger = Logger.getLogger("view.Window");
 
+    /**
+     * Constructor to create menu and buttons with listeners.
+     */
     public Menu() {
 
         JFrame jFrame = new JFrame();
@@ -96,9 +106,12 @@ public class Menu extends JPanel implements ActionListener {
         loadGame.addActionListener(this);
         exit.addActionListener(this);
 
-
     }
 
+    /**
+     * Background painting
+     * @param g - graphics var
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 

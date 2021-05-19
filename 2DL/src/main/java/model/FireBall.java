@@ -3,8 +3,14 @@ package model;
 import controller.Settings;
 
 import java.awt.*;
-import java.util.logging.Logger;
 
+/**
+ * Fireball class lets user attack enemies with fireball
+ *
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ * @see Textures
+ */
 public class FireBall extends Textures{
     private static int count;
     private final boolean throwRight;
@@ -22,6 +28,10 @@ public class FireBall extends Textures{
 
     }
 
+    /**
+     * Method that updates the state of fireball.
+     * @param g - texture object
+     */
     public void update(Graphics g) {
         if (throwRight) {
             xPos += 15;

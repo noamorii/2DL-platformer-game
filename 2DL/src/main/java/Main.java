@@ -1,8 +1,15 @@
+import model.Textures;
 import view.Menu;
 import view.Sound;
 
 import java.util.logging.Logger;
 
+/**
+ * Main class that starts it all!
+ *
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @version 1.0
+ */
 public class Main {
 
     private static final Logger logger = Logger.getLogger("Main");

@@ -1,7 +1,10 @@
 package controller;
 
+import model.Character;
 import model.Level;
-import view.Menu;
+import multiplayer.Client;
+import multiplayer.Server;
+import multiplayer.packets.Packet00Login;
 import view.Window;
 import java.awt.Graphics;
 import java.awt.event.*;
@@ -13,13 +16,21 @@ import java.util.logging.Logger;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
 
+/**
+ * Main Game class that starts the whole game.
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @version 1.0
+ */
 public class Game implements KeyListener, ActionListener {
 
     private static Timer timer;
     private final Window window;
-    private static boolean paused;
+    public Character player;
+    private boolean paused;
     private static boolean wasSaved;
     private Level level;
+    public Client socketClient;
+    public Server socketServer;
 
     private static final Logger logger = Logger.getLogger("controller.Game");
 
@@ -32,12 +43,35 @@ public class Game implements KeyListener, ActionListener {
         level.setUpLevel(level);
         timer = new Timer(20, window);
         timer.start();
-        displayInstructions();
+        //displayInstructions();
         logger.info("Game class called");
 
-
+        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username"), (int)level.getCharacter().getX(), (int)level.getCharacter().getY());
+        loginPacket.writeData(socketClient);
     }
 
+    public Level getLevel() {
+        return level;
+    }
+
+    /**
+     * Method that starts the server.
+     */
+    public synchronized void start(){
+
+        if (JOptionPane.showConfirmDialog(window, "Do you want to run the server") == 0){
+            socketServer = new Server(this);
+            socketServer.start();
+        }
+
+        socketClient = new Client(this, "localhost");
+        socketClient.start();
+    }
+
+    /**
+     * Updating game state.
+     * @param g - graphics parameter
+     */
     public void update(Graphics g) {
 
         if (level!= null) { // on first call, model will be null, necessary to have view run first to populate Definitions class with world info
@@ -58,6 +92,9 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
+    /**
+     * Represents game pause.
+     */
     public void pause() {
 
         if (!paused) {
@@ -71,6 +108,9 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
+    /**
+     * Save level objects to txt file.
+     */
     public void saveGame() {
 
         wasSaved = true;
@@ -82,16 +122,16 @@ public class Game implements KeyListener, ActionListener {
             out.writeObject(level);
             fileStream.close();
             out.close();
-
         } catch (IOException i) {
             i.printStackTrace();
             logger.warning(i.getMessage());
-
         }
-
         logger.info("Level saved");
     }
 
+    /**
+     * Allows user to load saved game from txt file.
+     */
     public void loadGame() {
         paused = true;
         timer.stop();
@@ -129,6 +169,9 @@ public class Game implements KeyListener, ActionListener {
     public void keyTyped(KeyEvent e) {
     }
 
+    /**
+     * Listener that allows user to move character by a,d, space and shot fireballs by enter.
+     */
     public void keyPressed(KeyEvent e) {
         if (!paused) {
             if (e.getKeyChar() == 'a') {
@@ -143,6 +186,9 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
+    /**
+     * Listener that allows user to move character by a,d.
+     */
     public void keyReleased(KeyEvent e) {
         if (e.getKeyChar() == 'a') {
             level.setPlayerDirection(Settings.VelocityState.STILL, 'a');
@@ -151,7 +197,10 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
-
+    /**
+     * Calls functions depending on the selected value
+     * @param evt - action event
+     */
     @Override
     public void actionPerformed(ActionEvent evt) {
         switch (evt.getActionCommand()) {

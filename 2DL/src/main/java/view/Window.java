@@ -2,12 +2,19 @@ package view;
 
 import controller.Game;
 import controller.Settings;
+import model.Textures;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+/**
+ * Window class opens a window with certain parameters and calls MyPanel class
+ *
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @version 1.0
+ */
 public class Window extends JFrame implements ActionListener{
 
     private static final Logger logger = Logger.getLogger("view.Window");
@@ -25,6 +32,8 @@ public class Window extends JFrame implements ActionListener{
         setResizable(false);
         addKeyListener(gm);
 
+        gm.start();
+
         MyPanel myPanel = new MyPanel(gm);
         JMenuBar mainMenu = myPanel.showOptions(gm);
         this.setJMenuBar(mainMenu);
@@ -39,3 +48,4 @@ public class Window extends JFrame implements ActionListener{
     }
 
 }
+

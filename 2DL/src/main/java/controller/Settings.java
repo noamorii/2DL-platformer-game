@@ -1,15 +1,17 @@
 package controller;
 
-import javax.swing.*;
+import model.Textures;
 
+/**
+ * Settings where user can control basic game properties
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ * @see Textures
+ */
 public abstract class Settings {
 
     public enum VelocityState {
         LEFT, RIGHT, STILL
-    }
-
-    public enum ViewState {
-        START_STATE, NEXT_STATE;
     }
 
     public static String gameName = "2DL Engine";
@@ -20,11 +22,8 @@ public abstract class Settings {
     public static int windowHeight = 800;
 
     public static String instructionText =
-
-            "Welcome Samurai! We need your help in recovering an ancient relic!\n" +
-                    "But watch out, as it's guarded by knights of the undead....\n\n" +
-                    "How to play:\n" +
-                    "A - move left\nD - move right\nSpace - Jump (double tap in air to double jump)\nEnter - Throw a shuriken (up to 3 can be thrown at once!)\n" +
+            "How to play:\n" +
+                    "A - move left\nD - move right\nSpace - Jump (double tap in air to double jump)\nEnter - cast a fire spell (up to 3 can be thrown at once!)\n" +
                     "p - Pause/Resume the game\ni - Display these instructions\n\n" +
                     "Good luck and hurry, for time is running out...";
 

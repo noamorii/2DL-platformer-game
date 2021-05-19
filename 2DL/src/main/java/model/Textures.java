@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+/**
+ * Textures class loads all textures and animations from /assets/ folder
+ *
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ */
 public class Textures implements Serializable {
 
     protected double xPos;
@@ -74,6 +80,10 @@ public class Textures implements Serializable {
         // base sprites don't need to do anything extra
     }
 
+    /**
+     * Setting image to texture
+     * @param imagePath - path to image
+     */
     public void setImage(String imagePath) {
         if (!imagePath.equals(Settings.assetDirectory + "")) {
             try {
@@ -97,10 +107,19 @@ public class Textures implements Serializable {
         }
     }
 
+    /**
+     * Draw textures
+     * @param g - graphics
+     */
     public void update(Graphics g) {
         g.drawImage(image, (int)xPos, (int)yPos, imageWidth, imageHeight, null);
     }
 
+    /**
+     * Method to determine if two textures intersect.
+     * @param tex - texture object
+     * @return boolean value true if texture is overlapping the character
+     */
     public boolean overlaps(Textures tex) {
 
         double object1XLeft = this.xPos;
@@ -118,5 +137,4 @@ public class Textures implements Serializable {
                 object1YUp < object2YUp &&
                 object1YDown > object2YDown);
     }
-
 }

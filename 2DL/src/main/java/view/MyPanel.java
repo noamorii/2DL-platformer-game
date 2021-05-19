@@ -7,6 +7,12 @@ import model.Character;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Implements panel with options and draw character hearts.
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ */
+
 class MyPanel extends JPanel {
 
     private final Game game;
@@ -16,6 +22,10 @@ class MyPanel extends JPanel {
 
     }
 
+    /**
+     * Paint players hp
+     * @param g
+     */
     public void paintComponent(Graphics g) {
 
         game.update(g);
@@ -49,6 +59,11 @@ class MyPanel extends JPanel {
 
     }
 
+    /**
+     * Show options on game window.
+     * @param gm
+     * @return - mainMenu with options
+     */
     public JMenuBar showOptions(Game gm) {
 
         JMenuBar mainMenu = new JMenuBar();

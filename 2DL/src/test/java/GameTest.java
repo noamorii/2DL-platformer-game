@@ -15,8 +15,8 @@ public class GameTest {
     @Test
     public void testOverlaps() {
 
-        Character character = new Character();
-        character.setXsetY(30,30);
+        Level level = new Level();
+        Character character = new Character(level, 30,30);
 
         Textures texture = new Textures("Plants_12.png", 150, 150, true);
         texture.setXsetY(30,30);
@@ -28,8 +28,8 @@ public class GameTest {
     @Test
     public void testNotOverlaps() {
 
-        Character character = new Character();
-        character.setXsetY(210,210);
+        Level level = new Level();
+        Character character = new Character(level, 210,210);
 
         Textures texture = new Textures("Plants_12.png", 150, 150, true);
         texture.setXsetY(30,30);
@@ -40,7 +40,9 @@ public class GameTest {
     @Test
     public void characterGetDamage() {
 
-        Character character = new Character();
+        Level level = new Level();
+        Character character = new Character(level, 210,210);
+
         character.getDamage();
         assertEquals(Character.getHp(), 2);
 
@@ -54,7 +56,9 @@ public class GameTest {
 
     @Test
     public void enemyGotDamage() {
+
         Enemy enemy = new Enemy(0,0, 180);
+
         enemy.damaged();
         assertEquals(enemy.getHp(), 2);
 
@@ -105,16 +109,16 @@ public class GameTest {
     public void fixedCollision() {
 
         Level level = new Level();
-
-        Character character = level.getCharacter();
-        character.setXsetY(100,700);
         level.setCharacter();
+        Character character = level.getCharacter();
+        character.setXsetY(100, 700);
+
 
         Textures texture = new Textures("", 230, 40, true);
         texture.setXsetY(100,700);
         level.addToArrayList(texture);
 
-        level.fixCollisions();
+        level.fixCollisions(character);
 
         double expectedResult = texture.getX() - Settings.characterSize + Settings.characterHitBox - 1;
 

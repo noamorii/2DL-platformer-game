@@ -6,6 +6,12 @@ import java.util.logging.Logger;
 
 import controller.Settings;
 
+/**
+ * Enemy class that controls all enemies on the level
+ * @author Olesia Cheremnykh and Dmitrtii Zamedianskii
+ * @version 1.0
+ * @see Textures
+ */
 public class Enemy extends Textures {
 
     private static final Logger logger = Logger.getLogger("model.Enemy");
@@ -23,10 +29,17 @@ public class Enemy extends Textures {
     private double xPosBeforeAttack;
     private double yPosBeforeAttack;
 
+    /**
+     * Set player for enemies to attack
+     * @param p - player
+     */
     public static void setPlayer(Character p) {
         player = p;
     }
 
+    /**
+     * Takes life or kills depending on health counter.
+     */
     public void damaged() {
         if (hp != 1){
             hp--;
@@ -35,6 +48,13 @@ public class Enemy extends Textures {
             incrementFramesSinceDeath();
         }
     }
+
+    /**
+     * Enemy constructor.
+     * @param x - enemy x position
+     * @param y - enemy y position
+     * @param roamDist - Distance of movement of enemies
+     */
 
     public Enemy(int x, int y, int roamDist) {
         super("npc_walking_right.gif", 96, 96, false);
@@ -56,17 +76,23 @@ public class Enemy extends Textures {
         return hp;
     }
 
+    /**
+     * Starts animation of dying and changes dead state.
+     */
     public void kill() {
 
         if (isAttacking()) {
             resetFromAttack();
         }
-        image = walkingRight ? new ImageIcon(Settings.assetDirectory + "dying_left.gif").getImage() : new ImageIcon(Settings.assetDirectory + "dying_right.gif").getImage();
-        dead = true;
+
         if (walkingRight) {
-            xPos -= 20;
+            image = new ImageIcon(Settings.assetDirectory + "dying_left.gif").getImage();
+        } else {
+            image = new ImageIcon(Settings.assetDirectory + "dying_right.gif").getImage();
         }
-        hp = 3;
+
+        dead = true;
+
         logger.info("Enemy (" + Enemy.this + ") was killed");
     }
 
@@ -82,6 +108,9 @@ public class Enemy extends Textures {
         return framesSinceDeath;
     }
 
+    /**
+     * Starts dying animation during the frames.
+     */
     public void incrementFramesSinceDeath() {
         if (walkingRight) {
             image = new ImageIcon(Settings.assetDirectory + "dying_right.gif").getImage();
@@ -91,12 +120,18 @@ public class Enemy extends Textures {
     }
 
     private boolean playerOnSameLevel() {
-        // Player's head is above skeleton's head by less than 60 pixels
+        // Player's head is above enemy's head by less than 60 pixels
         return player.getY() + Settings.characterHitBoxTop - yPos > 0 && player.getY() - yPos < 60;
     }
 
+    /**
+     * Player in attack distance.
+     * @return boolean state of player in attack distance.
+     */
     private boolean playerInAttackDistance() {
-        return player != null && playerOnSameLevel() && (Math.abs(player.getX() + player.getWidth() - Settings.characterHitBox - xPos) <= Settings.enemyAttackDist
+        return player != null
+                && playerOnSameLevel()
+                && (Math.abs(player.getX() + player.getWidth() - Settings.characterHitBox - xPos) <= Settings.enemyAttackDist
                 || Math.abs(player.getX() + Settings.characterHitBox - (xPos + imageWidth)) <= Settings.enemyAttackDist);
     }
 
@@ -122,12 +157,8 @@ public class Enemy extends Textures {
         xPosBeforeAttack = xPos;
         yPosBeforeAttack = yPos;
 
-
         //attack here
         attackingLeft = true;
-        imageWidth = 96;
-        imageHeight = 96;
-
         xPos -= 15;
 
     }
@@ -136,20 +167,16 @@ public class Enemy extends Textures {
         xPosBeforeAttack = xPos;
         yPosBeforeAttack = yPos;
 
-
         //attack here
         attackingRight = true;
-        imageWidth = 96;
-        imageHeight = 96;
-
         xPos += 15;
-
-
     }
 
+    /**
+     * Allows you to return enemies to their original position.
+     */
     private void resetFromAttack() {
-        imageWidth = 96;
-        imageHeight = 96;
+
         xPos = xPosBeforeAttack;
         yPos = yPosBeforeAttack;
 
@@ -162,6 +189,10 @@ public class Enemy extends Textures {
         }
     }
 
+    /**
+     * Display of health above the heads of enemies. Displays the attack of enemies and the subsequent reset of the state.
+     * @param g - graphics
+     */
     public void update(Graphics g) {
         if (!dead) {
 
