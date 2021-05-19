@@ -1,4 +1,3 @@
-import model.Textures;
 import view.Menu;
 import view.Sound;
 
@@ -10,10 +9,15 @@ import java.util.logging.Logger;
  * @author Cheremnykh Olesia and Dmitrii Zamedianskii
  * @version 1.0
  */
+
 public class Main {
 
     private static final Logger logger = Logger.getLogger("Main");
 
+    /**
+     * Main class
+     * @param args
+     */
     public static void main(String[] args) {
 
         logger.info("Launching the program");

@@ -281,6 +281,8 @@ public class Level implements Serializable {
                     character.setVelocity((int)(-0.6 * character.getVelocity())); //the speed of the player's rebound from the block and fall
                 }
             }
+
+
         }
     }
 
@@ -290,4 +292,8 @@ public class Level implements Serializable {
             texturesArrayList.add(new FireBall(character.getX(), character.getY(), character.isFacingRight()));
         }
     }
+
+
+
+
 }

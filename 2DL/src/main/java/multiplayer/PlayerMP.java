@@ -9,7 +9,7 @@ import java.net.InetAddress;
 /**
  * Player class that creates character for multiplayer.
  *
- * @autor Cheremnykh Olesia and Dmitrii Zamedianskii
+ * @author Cheremnykh Olesia and Dmitrii Zamedianskii
  * @version 1.0
  * @see Character
  */

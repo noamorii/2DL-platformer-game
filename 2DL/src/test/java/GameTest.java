@@ -9,9 +9,14 @@ import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for game modules
+ */
 public class GameTest {
 
-
+    /**
+     * TestOverlaps
+     */
     @Test
     public void testOverlaps() {
 
@@ -24,7 +29,9 @@ public class GameTest {
         boolean result = character.overlaps(texture);
         assertTrue(result);
     }
-
+    /**
+     * testNotOverlaps
+     */
     @Test
     public void testNotOverlaps() {
 
@@ -37,6 +44,9 @@ public class GameTest {
         boolean result = character.overlaps(texture);
         assertFalse(result);
     }
+    /**
+     * characterGetDamage
+     */
     @Test
     public void characterGetDamage() {
 
@@ -53,7 +63,9 @@ public class GameTest {
         assertTrue(character.isDead());
 
     }
-
+    /**
+     * enemyGotDamage
+     */
     @Test
     public void enemyGotDamage() {
 
@@ -68,7 +80,9 @@ public class GameTest {
         enemy.damaged();
         assertTrue(enemy.isDead());
     }
-
+    /**
+     * playerGotKey
+     */
     @Test
     public void playerGotKey() {
 
@@ -86,7 +100,9 @@ public class GameTest {
 
         assertTrue(Character.getKeyStatus());
     }
-
+    /**
+     * playerDoesntGotKey
+     */
     @Test
     public void playerDoesntGotKey() {
 
@@ -104,7 +120,9 @@ public class GameTest {
 
         assertFalse(Character.getKeyStatus());
     }
-
+    /**
+     * fixedCollision
+     */
     @Test
     public void fixedCollision() {
 

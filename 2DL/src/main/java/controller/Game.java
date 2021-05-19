@@ -25,11 +25,20 @@ public class Game implements KeyListener, ActionListener {
 
     private static Timer timer;
     private final Window window;
+    /**
+     * Character
+     */
     public Character player;
     private boolean paused;
     private static boolean wasSaved;
     private Level level;
+    /**
+     * Client
+     */
     public Client socketClient;
+    /**
+     * Server
+     */
     public Server socketServer;
 
     private static final Logger logger = Logger.getLogger("controller.Game");
@@ -43,10 +52,12 @@ public class Game implements KeyListener, ActionListener {
         level.setUpLevel(level);
         timer = new Timer(20, window);
         timer.start();
-        //displayInstructions();
+        displayInstructions();
         logger.info("Game class called");
 
-        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username"), (int)level.getCharacter().getX(), (int)level.getCharacter().getY());
+        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username"),
+                (int)level.getCharacter().getX(),
+                (int)level.getCharacter().getY());
         loginPacket.writeData(socketClient);
     }
 
