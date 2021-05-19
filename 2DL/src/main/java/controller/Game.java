@@ -1,6 +1,7 @@
 package controller;
 
 import model.Character;
+import model.Enemy;
 import model.Level;
 import multiplayer.Client;
 import multiplayer.Server;
@@ -223,6 +224,7 @@ public class Game implements KeyListener, ActionListener {
                 break;
             case "Load Game":
                 loadGame();
+                Enemy.setPlayer(level.getCharacter());
                 break;
             case "Instructions":
                 displayInstructions();
