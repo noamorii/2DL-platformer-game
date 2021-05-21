@@ -3,10 +3,12 @@ package view;
 import controller.Game;
 import controller.Settings;
 import model.Textures;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -65,7 +67,13 @@ public class Menu extends JPanel implements ActionListener {
             }
 
             public void mouseReleased(MouseEvent evt) {
-                new Game();
+                try {
+                    new Game();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 jFrame.dispose();
 
             }
@@ -82,7 +90,13 @@ public class Menu extends JPanel implements ActionListener {
             }
 
             public void mouseClicked(MouseEvent evt) {
-                new Game().loadGame();
+                try {
+                    new Game().loadGame();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 jFrame.dispose();
             }
         });

@@ -2,8 +2,15 @@ package model;
 
 import controller.Settings;
 import multiplayer.PlayerMP;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,11 +26,11 @@ import java.util.logging.Logger;
 public class Level implements Serializable {
 
     private final ArrayList<Textures> texturesArrayList;
-    private final Textures flag;
+    private Textures flag;
     private PlayerMP playerMP;
     private Character character;
     //private Character character2;
-    private final Key key;
+    private Key key;
     private boolean gameIsOver;
     private boolean won;
     private static final Logger logger = Logger.getLogger("model.Level");
@@ -31,8 +38,6 @@ public class Level implements Serializable {
     public Level() {
 
         logger.info("New level created");
-        key = new Key(800, 300);
-        flag = new Textures("flag.gif", 75, 150, false).setX(1380).setY(0);
         gameIsOver = false;
         won = false;
         texturesArrayList = new ArrayList<>(); //List of all textures
@@ -42,11 +47,12 @@ public class Level implements Serializable {
      * Method to set up the level.
      * @param level - texture object
      */
-    public void setUpLevel(Level level) {
+    public void setUpLevel(Level level) throws IOException, ParseException {
+
         level.setDecorations();
         level.setEnemies();
-        level.setFlag();
         level.setKey();
+        level.setFlag();
         level.setCharacter();
         level.setPlatforms();
     }
@@ -63,50 +69,105 @@ public class Level implements Serializable {
         return key;
     }
 
+    public void parseJson(String word) throws IOException, ParseException {
+
+        Object level = new JSONParser().parse(new FileReader("level.json"));
+        JSONObject levelObj= (JSONObject) level;
+
+        JSONArray array = (JSONArray) levelObj.get(word);
+
+        switch (word) {
+            case "background":
+                JSONObject background = (JSONObject) array.get(0);
+                addToArrayList(new Textures((String) background.get("img"),
+                        ((Long) background.get("width")).intValue(),
+                        ((Long) background.get("height")).intValue(),
+                        (boolean) background.get("collidable")));
+                break;
+
+            case "decorations":
+            case "platforms":
+                for (Object obj : array) {
+                    JSONObject decOrPlat = (JSONObject) obj;
+                    addToArrayList(new Textures((String) decOrPlat.get("img"),
+                            ((Long) decOrPlat.get("width")).intValue(),
+                            ((Long) decOrPlat.get("height")).intValue(),
+                            (boolean) decOrPlat.get("collidable"))
+                            .setXsetY(((Long) decOrPlat.get("x")).intValue(),
+                                    ((Long) decOrPlat.get("y")).intValue()));
+                }
+                break;
+
+            case "character":
+            case "flag":
+            case "key":
+                JSONObject object = (JSONObject) array.get(0);
+
+                switch (word) {
+                    case "character":
+                        character = new Character(this, ((Long) object.get("x")).intValue(),
+                                ((Long) object.get("y")).intValue());
+                        addToArrayList(character);
+                        Enemy.setPlayer(character);
+                        break;
+
+                    case "flag":
+                        flag = new Flag(((Long) object.get("x")).intValue(),
+                                ((Long) object.get("y")).intValue());
+                        addToArrayList(flag);
+                        break;
+
+                    default:
+                        key = new Key(((Long) object.get("x")).intValue(),
+                                ((Long) object.get("y")).intValue());
+                        addToArrayList(key);
+                        break;
+                }
+                break;
+
+            case "enemies":
+                for (Object obj : array) {
+                    JSONObject enemy = (JSONObject) obj;
+                    addToArrayList(new Enemy(((Long) enemy.get("x")).intValue(),
+                            ((Long) enemy.get("y")).intValue(),
+                            ((Long) enemy.get("roamDist")).intValue()));
+                }
+                break;
+        }
+    }
+
     /**
      * Method to decorate the level.
      */
-    public void setDecorations() {
-        addToArrayList(new Textures("background.png", 1500, 800, false));
-        // Level decoration
-        addToArrayList(new Textures("Plants_03.png", 300, 180, false).setXsetY(-65,550));
-        addToArrayList(new Textures("Plants_07.png", 150, 180, false).setXsetY(360,550));
-        addToArrayList(new Textures("Plants_07.png", 100, 100, false).setXsetY(480,620));
-        addToArrayList(new Textures("Plants_03.png", 150, 90, false).setXsetY(1250,520));
-
-        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(220,350));
-        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(520,80));
-        addToArrayList(new Textures("Plants_12.png", 150, 150, false).setXsetY(900,380));
+    public void setDecorations() throws IOException, ParseException {
+        parseJson("background");
+        parseJson("decorations");
     }
 
     /**
      * Set character to texture array list
      */
-    public void setCharacter() {
-        character = new Character(this, 90, 530);
-        addToArrayList(character);
-        Enemy.setPlayer(character);
+    public void setCharacter() throws IOException, ParseException {
+        parseJson("character");
     }
 
-    public void setFlag() {
-        addToArrayList(flag);
+    public void setFlag() throws IOException, ParseException {
+        parseJson("flag");
     }
 
     public void addToArrayList(Textures textures) {
         texturesArrayList.add(textures);
     }
 
-    public void setKey() {
-        addToArrayList(key);
+    public void setKey() throws IOException, ParseException {
+        parseJson("key");
     }
 
     /**
      * Set enemies to texture array list
      */
-    public void setEnemies() {
-        addToArrayList(new Enemy(875, 380, 180));
-        addToArrayList(new Enemy(375, 330, 180));
-        addToArrayList(new Enemy(675, 105, 180));
+    public void setEnemies() throws IOException, ParseException {
+        parseJson("enemies");
     }
 
     /**
@@ -121,38 +182,8 @@ public class Level implements Serializable {
     /**
      * Method to build the level by platforms
      */
-    public void setPlatforms() {
-
-
-        addToArrayList(new Textures("", 230, 40, true).setXsetY(0,700));
-        addToArrayList(new Textures("platform3.png", 285, 120, false).setXsetY(-35,680));
-
-        addToArrayList(new Textures("", 325, 40, true).setXsetY(340,700));
-        addToArrayList(new Textures("platform2.png", 400, 150, false).setXsetY(300,675));
-
-        addToArrayList(new Textures("", 250, 40, true).setXsetY(850,700));
-        addToArrayList(new Textures("platform3.png", 300, 140, false).setXsetY(825,680));
-
-        addToArrayList(new Textures("", 200, 40, true).setXsetY(1200,600));
-        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(1170,580));
-
-        addToArrayList(new Textures("", 400, 40, true).setXsetY(700,475));
-        addToArrayList(new Textures("platform.png", 465, 120, false).setXsetY(675,460));
-
-        addToArrayList(new Textures("", 400, 40, true).setXsetY(200,425));
-        addToArrayList(new Textures("platform.png", 470, 120, false).setXsetY(175,415));
-
-        addToArrayList(new Textures("", 200, 40, true).setXsetY(150,250));
-        addToArrayList(new Textures("platform3.png", 250, 110, false).setXsetY(125,225));
-
-        addToArrayList(new Textures("", 400, 40, true).setXsetY(500,200));
-        addToArrayList(new Textures("platform.png", 460, 120, false).setXsetY(475,185));
-
-        addToArrayList(new Textures("", 200, 40, true).setXsetY(1000,200));
-        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(975,180));
-
-        addToArrayList(new Textures("", 200, 40, true).setXsetY(1350,150));
-        addToArrayList(new Textures("platform3.png", 265, 110, false).setXsetY(1325,125));
+    public void setPlatforms() throws IOException, ParseException {
+        parseJson("platforms");
     }
 
     /**

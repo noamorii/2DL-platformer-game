@@ -27,7 +27,7 @@ public class Sound {
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInput);
                 FloatControl vc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                vc.setValue(-20);
+                vc.setValue(-30);
                 clip.start();
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
                 logger.info("Sound loaded");

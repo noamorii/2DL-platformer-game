@@ -6,6 +6,7 @@ import model.Level;
 import multiplayer.Client;
 import multiplayer.Server;
 import multiplayer.packets.Packet00Login;
+import org.json.simple.parser.ParseException;
 import view.Window;
 import java.awt.Graphics;
 import java.awt.event.*;
@@ -44,7 +45,7 @@ public class Game implements KeyListener, ActionListener {
 
     private static final Logger logger = Logger.getLogger("controller.Game");
 
-    public Game() {
+    public Game() throws IOException, ParseException {
 
         wasSaved = false;
         paused = false;
@@ -84,7 +85,7 @@ public class Game implements KeyListener, ActionListener {
      * Updating game state.
      * @param g - graphics parameter
      */
-    public void update(Graphics g) {
+    public void update(Graphics g) throws IOException, ParseException {
 
         if (level!= null) { // on first call, model will be null, necessary to have view run first to populate Definitions class with world info
             if (level.gameIsOver()) {
@@ -144,7 +145,7 @@ public class Game implements KeyListener, ActionListener {
     /**
      * Allows user to load saved game from txt file.
      */
-    public void loadGame() {
+    public void loadGame() throws IOException, ParseException {
         paused = true;
         timer.stop();
 
@@ -224,8 +225,11 @@ public class Game implements KeyListener, ActionListener {
                 saveGame();
                 break;
             case "Load Game":
-                loadGame();
-
+                try {
+                    loadGame();
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
             case "Instructions":
                 displayInstructions();

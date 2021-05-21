@@ -39,6 +39,4 @@ public abstract class Settings {
     public static final int enemyAttackLength = 54; // Skeleton will be in attacking animation for 54 frames.
 
     public static final String assetDirectory = "assets/";
-
-
 }

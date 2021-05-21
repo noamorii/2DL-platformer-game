@@ -3,9 +3,11 @@ package view;
 import controller.Game;
 import controller.Settings;
 import model.Character;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Implements panel with options and draw character hearts.
@@ -28,7 +30,13 @@ class MyPanel extends JPanel {
      */
     public void paintComponent(Graphics g) {
 
-        game.update(g);
+        try {
+            game.update(g);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         Image heart = new ImageIcon(Settings.assetDirectory + "green_heart.png").getImage();
         Image emptyHeart = new ImageIcon(Settings.assetDirectory + "empty_heart.png").getImage();

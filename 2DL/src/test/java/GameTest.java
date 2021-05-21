@@ -2,9 +2,11 @@
 import controller.Settings;
 import model.*;
 import model.Character;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +85,7 @@ public class GameTest {
      * playerGotKey
      */
     @Test
-    public void playerGotKey() {
+    public void playerGotKey() throws IOException, ParseException {
 
         Level level = new Level();
         level.setCharacter();
@@ -103,7 +105,7 @@ public class GameTest {
      * playerDoesntGotKey
      */
     @Test
-    public void playerDoesntGotKey() {
+    public void playerDoesntGotKey() throws IOException, ParseException {
 
         Level level = new Level();
         level.setCharacter();
@@ -123,7 +125,7 @@ public class GameTest {
      * fixedCollision
      */
     @Test
-    public void fixedCollision() {
+    public void fixedCollision() throws IOException, ParseException {
 
         Level level = new Level();
         level.setCharacter();
@@ -144,7 +146,7 @@ public class GameTest {
     }
 
     @Test
-    public void testSetDirection() {
+    public void testSetDirection() throws IOException, ParseException {
 
         Level level = new Level();
         level.setCharacter();
@@ -157,7 +159,7 @@ public class GameTest {
     }
 
     @Test
-    public void testAddToArray() {
+    public void testAddToArray() throws IOException, ParseException {
 
         Level level = new Level();
         level.setPlatforms();
@@ -168,7 +170,7 @@ public class GameTest {
     }
 
     @Test
-    public void testAddAllToArray() {
+    public void testAddAllToArray() throws IOException, ParseException {
 
         Level level = new Level();
         level.setUpLevel(level);
