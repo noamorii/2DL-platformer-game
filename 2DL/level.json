@@ -1,0 +1,264 @@
+{ "background": [
+  {
+    "img": "background.png",
+    "width": 1500,
+    "height": 800,
+    "collidable": false
+  }
+  ],
+  "decorations": [
+    {
+      "img": "Plants_03.png",
+      "width": 300,
+      "height": 180,
+      "collidable": false,
+      "x": -65,
+      "y": 550
+    },
+    {
+      "img": "Plants_07.png",
+      "width": 150,
+      "height": 180,
+      "collidable": false,
+      "x": 360,
+      "y": 550
+    },
+    {
+      "img": "Plants_07.png",
+      "width": 100,
+      "height": 100,
+      "collidable": false,
+      "x": 480,
+      "y": 620
+    },
+    {
+      "img": "Plants_03.png",
+      "width": 150,
+      "height": 90,
+      "collidable": false,
+      "x": 1250,
+      "y": 520
+    },
+    {
+      "img": "Plants_12.png",
+      "width": 150,
+      "height": 150,
+      "collidable": false,
+      "x": 220,
+      "y": 350
+    },
+    {
+      "img": "Plants_12.png",
+      "width": 150,
+      "height": 150,
+      "collidable": false,
+      "x": 520,
+      "y": 80
+    },
+    {
+      "img": "Plants_12.png",
+      "width": 150,
+      "height": 150,
+      "collidable": false,
+      "x": 900,
+      "y": 380
+    }
+  ],
+  "enemies": [
+    {
+      "x": 875,
+      "y": 380,
+      "roamDist": 180
+    },
+    {
+      "x": 375,
+      "y": 330,
+      "roamDist": 180
+    },
+    {
+      "x": 675,
+      "y": 105,
+      "roamDist": 180
+    }
+  ],
+  "key": [
+    {
+      "x": 800,
+      "y": 300
+    }
+  ],
+  "flag": [
+    {
+      "x": 1380,
+      "y": 0
+    }
+  ],
+  "character": [
+    {
+      "x": 90,
+      "y": 530
+    }
+  ],
+  "platforms": [
+    {
+      "img": "",
+      "width": 230,
+      "height": 40,
+      "collidable": true,
+      "x": 0,
+      "y": 700
+    },
+    {
+      "img": "platform3.png",
+      "width": 285,
+      "height": 120,
+      "collidable": false,
+      "x": -35,
+      "y": 680
+    },
+    {
+      "img": "",
+      "width": 325,
+      "height": 40,
+      "collidable": true,
+      "x": 340,
+      "y": 700
+    },
+    {
+      "img": "platform2.png",
+      "width": 400,
+      "height": 150,
+      "collidable": false,
+      "x": 300,
+      "y": 675
+    },
+    {
+      "img": "",
+      "width": 250,
+      "height": 40,
+      "collidable": true,
+      "x": 850,
+      "y": 700
+    },
+    {
+      "img": "platform3.png",
+      "width": 300,
+      "height": 140,
+      "collidable": false,
+      "x": 825,
+      "y": 680
+    },
+    {
+      "img": "",
+      "width": 200,
+      "height": 40,
+      "collidable": true,
+      "x": 1200,
+      "y": 600
+    },
+    {
+      "img": "platform3.png",
+      "width": 265,
+      "height": 110,
+      "collidable": false,
+      "x": 1170,
+      "y": 580
+    },
+    {
+      "img": "",
+      "width": 400,
+      "height": 40,
+      "collidable": true,
+      "x": 700,
+      "y": 475
+    },
+    {
+      "img": "platform.png",
+      "width": 465,
+      "height": 120,
+      "collidable": false,
+      "x": 675,
+      "y": 460
+    },
+    {
+      "img": "",
+      "width": 400,
+      "height": 40,
+      "collidable": true,
+      "x": 200,
+      "y": 425
+    },
+    {
+      "img": "platform.png",
+      "width": 470,
+      "height": 120,
+      "collidable": false,
+      "x": 175,
+      "y": 415
+    },
+    {
+      "img": "",
+      "width": 200,
+      "height": 40,
+      "collidable": true,
+      "x": 150,
+      "y": 250
+    },
+    {
+      "img": "platform3.png",
+      "width": 250,
+      "height": 110,
+      "collidable": false,
+      "x": 125,
+      "y": 225
+    },
+    {
+      "img": "",
+      "width": 400,
+      "height": 40,
+      "collidable": true,
+      "x": 500,
+      "y": 200
+    },
+    {
+      "img": "platform.png",
+      "width": 460,
+      "height": 120,
+      "collidable": false,
+      "x": 475,
+      "y": 185
+    },
+    {
+      "img": "",
+      "width": 200,
+      "height": 40,
+      "collidable": true,
+      "x": 1000,
+      "y": 200
+    },
+    {
+      "img": "platform3.png",
+      "width": 265,
+      "height": 110,
+      "collidable": false,
+      "x": 975,
+      "y": 180
+    },
+    {
+      "img": "",
+      "width": 200,
+      "height": 40,
+      "collidable": true,
+      "x": 1350,
+      "y": 150
+    },
+    {
+      "img": "platform3.png",
+      "width": 265,
+      "height": 110,
+      "collidable": false,
+      "x": 1325,
+      "y": 125
+    }
+  ]
+}
