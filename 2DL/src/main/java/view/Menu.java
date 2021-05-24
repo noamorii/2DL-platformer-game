@@ -69,9 +69,7 @@ public class Menu extends JPanel implements ActionListener {
             public void mouseReleased(MouseEvent evt) {
                 try {
                     new Game();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
                 jFrame.dispose();
@@ -92,9 +90,7 @@ public class Menu extends JPanel implements ActionListener {
             public void mouseClicked(MouseEvent evt) {
                 try {
                     new Game().loadGame();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
                 jFrame.dispose();

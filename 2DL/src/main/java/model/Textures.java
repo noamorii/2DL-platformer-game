@@ -19,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class Textures implements Serializable {
 
-    protected double xPos;
-    protected double yPos;
+    public double xPos;
+    public double yPos;
     protected int imageWidth;
     protected int imageHeight;
     protected boolean collidable;

@@ -1,5 +1,6 @@
 package multiplayer;
 
+import controller.Listeners;
 import model.Character;
 import model.Level;
 import model.Textures;
@@ -18,8 +19,15 @@ public class PlayerMP extends Character{
     public InetAddress ipAddress;
     public int port;
 
+
     public PlayerMP(Level level, int x, int y, String username,InetAddress ipAddress, int port){
-        super(level, x, y);
+        super(level, x, y, null, username);
+        this.ipAddress = ipAddress;
+        this.port = port;
+    }
+
+    public PlayerMP(Level level, int x, int y, Listeners listeners, String username,  InetAddress ipAddress, int port){
+        super(level, x, y, listeners, username);
         this.ipAddress = ipAddress;
         this.port = port;
     }

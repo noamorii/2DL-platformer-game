@@ -1,6 +1,10 @@
 package model;
 
+import controller.Game;
+import controller.Listeners;
 import controller.Settings;
+import multiplayer.packets.Packet02Move;
+
 import javax.swing.*;
 import java.util.logging.Logger;
 
@@ -24,6 +28,8 @@ public class Character extends Textures{
     private boolean hasDoubleJump;
     private boolean facingRight;
     private boolean dead;
+    private Listeners listeners;
+    private String username;
     Level level1;
 
     private static final Logger logger = Logger.getLogger("model.Character");
@@ -35,16 +41,18 @@ public class Character extends Textures{
      * @param yPos1 - character position by y
      */
 
-    public Character(Level level, int xPos1, int yPos1) {
+    public Character(Level level, int xPos1, int yPos1, Listeners listeners, String username) {
 
         super("player_right.png", Settings.characterSize, Settings.characterSize, false);
         velocity = 0;
+        this.listeners = listeners;
         level1 = level;
         hasKey = false;
         hp = 3;
         inAir = true;
         hasDoubleJump = true;
         facingRight = true;
+        this.username = username;
         dead = false;
         xPos = xPos1;
         yPos = yPos1;
@@ -56,6 +64,9 @@ public class Character extends Textures{
         return hp;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
     public static boolean getKeyStatus() {
         return hasKey;
@@ -231,6 +242,9 @@ public class Character extends Textures{
         }
         yPos += velocity;
         velocity += accel;
+
+        Packet02Move packet02Move = new Packet02Move(this.getUsername(), this.xPos, this.yPos);
+        packet02Move.writeData(Game.game.socketClient);
 
     }
 

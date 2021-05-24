@@ -4,6 +4,7 @@ import model.Character;
 import model.Enemy;
 import model.Level;
 import multiplayer.Client;
+import multiplayer.PlayerMP;
 import multiplayer.Server;
 import multiplayer.packets.Packet00Login;
 import org.json.simple.parser.ParseException;
@@ -16,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
+import static java.awt.event.InputEvent.getMaskForButton;
 import static java.awt.event.KeyEvent.VK_ENTER;
 
 /**
@@ -23,15 +25,17 @@ import static java.awt.event.KeyEvent.VK_ENTER;
  * @author Cheremnykh Olesia and Dmitrii Zamedianskii
  * @version 1.0
  */
-public class Game implements KeyListener, ActionListener {
+public class Game implements ActionListener {
 
     private static Timer timer;
     private final Window window;
+    public Listeners listeners;
     /**
      * Character
      */
-    public Character player;
+    public PlayerMP player;
     private boolean paused;
+    public static Game game;
     private static boolean wasSaved;
     private Level level;
     /**
@@ -48,18 +52,22 @@ public class Game implements KeyListener, ActionListener {
     public Game() throws IOException, ParseException {
 
         wasSaved = false;
+        game = this;
         paused = false;
-        window = new Window(this);
         level = new Level();
+        window = new Window(this);
         level.setUpLevel(level);
         timer = new Timer(20, window);
         timer.start();
         displayInstructions();
+        listeners = new Listeners(this);
         logger.info("Game class called");
-
-        Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username"),
-                (int)level.getCharacter().getX(),
-                (int)level.getCharacter().getY());
+        player = new PlayerMP(this.getLevel(), 90, 530, listeners, JOptionPane.showInputDialog(this, "Please enter a username"), null,-1);
+        getLevel().addPlayer(player);
+        Packet00Login loginPacket = new Packet00Login(player.getUsername());
+        if (socketServer != null) {
+            socketServer.addConnection((PlayerMP) player, loginPacket);
+        }
         loginPacket.writeData(socketClient);
     }
 
@@ -77,7 +85,7 @@ public class Game implements KeyListener, ActionListener {
             socketServer.start();
         }
 
-        socketClient = new Client(this, "localhost");
+        socketClient = new Client(this, "127.0.0.1");
         socketClient.start();
     }
 
@@ -119,6 +127,10 @@ public class Game implements KeyListener, ActionListener {
             timer.start();
             logger.info("Game unpaused");
         }
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     /**
@@ -177,38 +189,6 @@ public class Game implements KeyListener, ActionListener {
 
     public void displayInstructions() {
         JOptionPane.showMessageDialog(window, Settings.instructionText, Settings.gameName, JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    /**
-     * Listener that allows user to move character by a,d, space and shot fireballs by enter.
-     */
-    public void keyPressed(KeyEvent e) {
-        if (!paused) {
-            if (e.getKeyChar() == 'a') {
-                level.setPlayerDirection(Settings.VelocityState.LEFT);
-            } else if (e.getKeyChar() == 'd') {
-                level.setPlayerDirection(Settings.VelocityState.RIGHT);
-            } else if (e.getKeyChar() == ' ') {
-                level.jumpPlayer();
-            } else if (e.getKeyChar() == VK_ENTER) {
-                level.throwFireball();
-            }
-        }
-    }
-
-    /**
-     * Listener that allows user to move character by a,d.
-     */
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar() == 'a') {
-            level.setPlayerDirection(Settings.VelocityState.STILL, 'a');
-        } else if (e.getKeyChar() == 'd') {
-            level.setPlayerDirection(Settings.VelocityState.STILL, 'd');
-        }
     }
 
     /**

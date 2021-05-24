@@ -1,5 +1,7 @@
 package model;
 
+import controller.Game;
+import controller.Listeners;
 import controller.Settings;
 import multiplayer.PlayerMP;
 import org.json.simple.JSONArray;
@@ -28,7 +30,7 @@ public class Level implements Serializable {
     private final ArrayList<Textures> texturesArrayList;
     private Textures flag;
     private PlayerMP playerMP;
-    private Character character;
+    public Character character;
     //private Character character2;
     private Key key;
     private boolean gameIsOver;
@@ -41,6 +43,7 @@ public class Level implements Serializable {
         gameIsOver = false;
         won = false;
         texturesArrayList = new ArrayList<>(); //List of all textures
+
     }
 
     /**
@@ -53,7 +56,7 @@ public class Level implements Serializable {
         level.setEnemies();
         level.setKey();
         level.setFlag();
-        level.setCharacter();
+//        level.setCharacter();
         level.setPlatforms();
     }
 
@@ -67,6 +70,25 @@ public class Level implements Serializable {
 
     public Key getKey() {
         return key;
+    }
+
+    private int getPlayerMPIndex(String username) {
+        Iterator<Textures> iter = texturesArrayList.iterator();
+        Textures texture;
+        int index = 0;
+        while(iter.hasNext()) {
+            texture = iter.next();
+            if (texture instanceof PlayerMP && ((PlayerMP)texture).getUsername().equals(username)) {
+                break;
+            }
+            index++;
+        }
+        return index;
+    }
+
+    public void movePlayer(String username, double x, double y) {
+        int index = getPlayerMPIndex(username);
+        texturesArrayList.get(index).setXsetY(x, y);
     }
 
     public void parseJson(String word) throws IOException, ParseException {
@@ -106,7 +128,7 @@ public class Level implements Serializable {
                 switch (word) {
                     case "character":
                         character = new Character(this, ((Long) object.get("x")).intValue(),
-                                ((Long) object.get("y")).intValue());
+                                ((Long) object.get("y")).intValue(), null, "null1");
                         addToArrayList(character);
                         Enemy.setPlayer(character);
                         break;
@@ -173,10 +195,11 @@ public class Level implements Serializable {
     /**
      * Set character to texture array list and update
      */
-    public void addPlayer(Character character2){
-        character2 = new Character(this, 100, 200);
+    public void addPlayer(PlayerMP character2){
         addToArrayList(character2);
-        character2.updateInfo();
+
+        character = character2;
+        ((Character) character2).updateInfo();
     }
 
     /**
@@ -195,7 +218,6 @@ public class Level implements Serializable {
         Textures texture;
         while(iter.hasNext()) {
             texture = iter.next();
-
             if (texture instanceof Character) {
                 if (texture.overlaps(key)) {
                     ((Character) texture).setKeyStatus(true);
